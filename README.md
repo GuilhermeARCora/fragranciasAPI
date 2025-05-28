@@ -29,5 +29,5 @@ API desenvolvida com foco em aprendizado prático de Node.js, Express, Mongoose 
 ### 2. Clonar o repositório
 
 ```bash
-git clone https://github.com/seu-usuario/fragancias-api.git
-cd fragancias-api
+[git clone https://github.com/seu-usuario/fragancias-api.git
+cd fragancias-api](https://github.com/GuilhermeARCora/fraganciasAPI.git)
