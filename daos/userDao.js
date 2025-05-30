@@ -8,6 +8,10 @@ const findUser = async (id) => {
     return await User.findById(id);
 };
 
+const findAllUsers = () =>{
+    return User.find()
+};
+
 const updateUser = async ({ id, ...data }) => {
   
     return await User.findByIdAndUpdate(id, data, {
@@ -24,5 +28,6 @@ module.exports = {
     createUser,
     updateUser,
     deleteUser,
-    findUser
+    findUser,
+    findAllUsers
 }

@@ -6,7 +6,6 @@ const app = express();
 
 const apiRouter = require('./routes/index');
 
-// 1) MIDDLEWARES
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }

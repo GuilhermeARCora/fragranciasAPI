@@ -48,6 +48,31 @@ const findUser = async (req,res) => {
 
 };
 
+const findAllUsers = async (req,res) => {
+
+  try{
+
+      const users = await userService.findAllUsers(req.query);    
+
+      res.status(200).json({
+        status: 'success',
+        results: users.length,
+        data: {
+          users
+        }
+      });
+
+  }catch (err) {
+
+    res.status(500).json({
+      status: 'fail',
+      message: err.message || 'Internal server error'
+    });
+
+  }
+
+};
+
 const updateUser = async (req,res) => {
     
     try{
@@ -101,5 +126,6 @@ module.exports = {
     createUser,
     findUser,
     updateUser,
-    deleteUser
+    deleteUser,
+    findAllUsers
 };
