@@ -1,18 +1,18 @@
 const User = require('../models/user');
 
-const createUser = async (obj) => {
+const createOne = async (obj) => {
     return await User.create(obj);
 };
 
-const findUser = async (id) => {
+const findOne = async (id) => {
     return await User.findById(id);
 };
 
-const findAllUsers = () =>{
+const findAll = () =>{
     return User.find()
 };
 
-const updateUser = async ({ id, ...data }) => {
+const updatePatch = async ({ id, ...data }) => {
   
     return await User.findByIdAndUpdate(id, data, {
         new: true,
@@ -20,14 +20,14 @@ const updateUser = async ({ id, ...data }) => {
     });
 };
 
-const deleteUser = async (id) => {
+const deleteOne = async (id) => {
     return await User.findByIdAndDelete(id);
 };
 
 module.exports = {
-    createUser,
-    updateUser,
-    deleteUser,
-    findUser,
-    findAllUsers
+    createOne,
+    updatePatch,
+    deleteOne,
+    findOne,
+    findAll
 }

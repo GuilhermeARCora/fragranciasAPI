@@ -1,20 +1,20 @@
 const userDao = require('../daos/userDao');
 const APIFeatures = require('../utils/apiFeatures');
 
-const createUser = async (userData) => {
-  return userDao.createUser(userData);
+const createOne = async (data) => {
+  return userDao.createOne(data);
 };
 
-const findUser = async (id) => {
+const findOne = async (id) => {
 
-  const user = await userDao.findUser(id);
+  const foundId = await userDao.findOne(id);
  
-  return user;
+  return foundId;
 };
 
-const findAllUsers = async (reqQuery) => {
+const findAll = async (reqQuery) => {
 
-  const query = userDao.findAllUsers()
+  const query = userDao.findAll()
 
   const features = new APIFeatures(query, reqQuery)
         .filter()
@@ -22,30 +22,30 @@ const findAllUsers = async (reqQuery) => {
         .limitFields()
         .paginate();
   
-  const users = await features.query;
+  const result = await features.query;
 
-  return users;    
+  return result;    
 
 };
 
-const updateUser = async (id, updates) => {
+const updatePatch = async (id, updates) => {
 
-  const updated = await userDao.updateUser({ id, ...updates });
+  const updated = await userDao.updatePatch({ id, ...updates });
  
   return updated;
 };
 
-const deleteUser = async (id) => {
+const deleteOne = async (id) => {
 
-  const result = await userDao.deleteUser(id);
+  const result = await userDao.deleteOne(id);
 
   return result;
 };
 
 module.exports = {
-  createUser,
-  findUser,
-  deleteUser,
-  updateUser,
-  findAllUsers
+    createOne,
+    updatePatch,
+    deleteOne,
+    findOne,
+    findAll
 };

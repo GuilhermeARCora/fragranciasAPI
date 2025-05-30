@@ -1,22 +1,22 @@
 const userService = require('../services/userService');
 
-const createUser = async (req,res) => {
+const createOne = async (req,res) => {
     
     try{
 
-      const createdUser = await userService.createUser(req.body);
+      const created = await userService.createOne(req.body);
 
       res.status(201).json({
         status: "sucess",
         data:{
-            createdUser
+            created
         }
       });
 
     }catch(err){
 
         res.status(500).json({
-          status:"error",
+          status:"fail",
           data: err.message
         });
 
@@ -24,23 +24,23 @@ const createUser = async (req,res) => {
 
 };
 
-const findUser = async (req,res) => {
+const findOne = async (req,res) => {
     
     try{
 
-        const user = await userService.findUser(req.params.id); 
+        const found = await userService.findOne(req.params.id); 
 
         res.status(200).json({
           status: "sucess",
           data:{
-             user
+             found
           }
         });
 
     }catch(err){
 
         res.status(500).json({
-          status:"error",
+          status:"fail",
           data: err.message
         });
 
@@ -48,17 +48,17 @@ const findUser = async (req,res) => {
 
 };
 
-const findAllUsers = async (req,res) => {
+const findAll = async (req,res) => {
 
   try{
 
-      const users = await userService.findAllUsers(req.query);    
+      const data = await userService.findAll(req.query);    
 
       res.status(200).json({
         status: 'success',
-        results: users.length,
+        results: data.length,
         data: {
-          users
+          data
         }
       });
 
@@ -73,25 +73,23 @@ const findAllUsers = async (req,res) => {
 
 };
 
-const updateUser = async (req,res) => {
+const updatePatch = async (req,res) => {
     
     try{
 
-        const userId = req.params.id
-        const updates = req.body
-        const updatedUser = await userService.updateUser(userId, updates); 
+        const updated = await userService.updatePatch(req.params.id, req.body); 
 
         res.status(200).json({
           status: "sucess",
           data:{
-             user: updatedUser
+              updated
           }
         });
 
     }catch(err){
 
         res.status(500).json({
-          status:"error",
+          status:"fail",
           data: err.message
         });
 
@@ -99,12 +97,11 @@ const updateUser = async (req,res) => {
 
 };
 
-const deleteUser = async (req,res) =>{
+const deleteOne = async (req,res) =>{
 
     try{
 
-        const userId = req.params.id;
-        await userService.deleteUser(userId);
+        await userService.deleteOne(req.params.id);
 
         res.status(200).json({
             status:"sucess",
@@ -114,7 +111,7 @@ const deleteUser = async (req,res) =>{
     }catch(err){
 
         res.status(500).json({
-          status:"error",
+          status:"fail",
           data: err.message
         });
 
@@ -123,9 +120,9 @@ const deleteUser = async (req,res) =>{
 };
 
 module.exports = {
-    createUser,
-    findUser,
-    updateUser,
-    deleteUser,
-    findAllUsers
+    createOne,
+    updatePatch,
+    deleteOne,
+    findOne,
+    findAll
 };

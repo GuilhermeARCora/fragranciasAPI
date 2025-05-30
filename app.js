@@ -1,6 +1,5 @@
 const express = require('express');
 const morgan = require('morgan');
-const { swaggerUi, swaggerSpec } = require('./swagger');
 
 const app = express();
 
@@ -18,7 +17,5 @@ app.use((req, res, next) => {
 });
 
 app.use('/api/v1', apiRouter);
-
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 module.exports = app;
