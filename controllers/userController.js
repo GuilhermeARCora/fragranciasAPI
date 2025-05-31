@@ -1,123 +1,69 @@
 const userService = require('../services/userService');
+const catchAsync = require('../utils/catchAsync');
 
-const createOne = async (req,res) => {
-    
-    try{
+const createOne = catchAsync(async (req,res,next) => {
+  
+  const created = await userService.createOne(req.body);
 
-      const created = await userService.createOne(req.body);
-
-      res.status(201).json({
-        status: "sucess",
-        data:{
-            created
-        }
-      });
-
-    }catch(err){
-
-        res.status(500).json({
-          status:"fail",
-          data: err.message
-        });
-
+  res.status(201).json({
+    status: "success",
+    data:{
+        created
     }
+  });
 
-};
+});
 
-const findOne = async (req,res) => {
-    
-    try{
+const findOne = catchAsync(async (req,res,next) => {
+  
+  const found = await userService.findOne(req.params.id); 
 
-        const found = await userService.findOne(req.params.id); 
-
-        res.status(200).json({
-          status: "sucess",
-          data:{
-             found
-          }
-        });
-
-    }catch(err){
-
-        res.status(500).json({
-          status:"fail",
-          data: err.message
-        });
-
+  res.status(200).json({
+    status: "success",
+    data:{
+       found
     }
+  });
 
-};
+});
 
-const findAll = async (req,res) => {
+const findAll = catchAsync(async (req,res,next) => {
+  
+  const data = await userService.findAll(req.query);    
 
-  try{
-
-      const data = await userService.findAll(req.query);    
-
-      res.status(200).json({
-        status: 'success',
-        results: data.length,
-        data: {
-          data
-        }
-      });
-
-  }catch (err) {
-
-    res.status(500).json({
-      status: 'fail',
-      message: err.message || 'Internal server error'
-    });
-
-  }
-
-};
-
-const updatePatch = async (req,res) => {
-    
-    try{
-
-        const updated = await userService.updatePatch(req.params.id, req.body); 
-
-        res.status(200).json({
-          status: "sucess",
-          data:{
-              updated
-          }
-        });
-
-    }catch(err){
-
-        res.status(500).json({
-          status:"fail",
-          data: err.message
-        });
-
+  res.status(200).json({
+    status: 'success',
+    results: data.length,
+    data: {
+      data
     }
+  });
 
-};
+});
 
-const deleteOne = async (req,res) =>{
+const updatePatch = catchAsync(async (req,res,next) => {
+  
+  const updated = await userService.updatePatch(req.params.id, req.body); 
 
-    try{
-
-        await userService.deleteOne(req.params.id);
-
-        res.status(200).json({
-            status:"sucess",
-            data: null
-        })
-
-    }catch(err){
-
-        res.status(500).json({
-          status:"fail",
-          data: err.message
-        });
-
+  res.status(200).json({
+    status: "success",
+    data:{
+        updated
     }
+  });
 
-};
+});
+
+const deleteOne = catchAsync(async (req,res,next) =>{
+  
+  await userService.deleteOne(req.params.id);
+
+  res.status(200).json({
+      status:"success",
+      data: null
+  })
+
+});
 
 module.exports = {
     createOne,
