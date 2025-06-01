@@ -23,13 +23,7 @@ const userSchema = new Schema({
         required:[true, 'Password is required'],
         minlength: [6,'The password must have at least 6 characters'],
         trim:true
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-      select: false
     }
-    
 });
 
 userSchema.virtual('confirmPassword').set(function (value) {

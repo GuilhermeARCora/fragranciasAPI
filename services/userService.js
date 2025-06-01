@@ -3,7 +3,7 @@ const APIFeatures = require('../utils/apiFeatures');
 const AppError = require('../utils/appError');
 
 const createOne = async (data) => {
-  return userDao.createOne(data);
+  return await userDao.createOne(data);
 };
 
 const findOne = async (id) => {
