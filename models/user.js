@@ -36,20 +36,17 @@ userSchema.virtual('confirmEmail').set(function (value) {
 
 userSchema.pre('validate', function (next) {
   
-    if (this.isNew) {
+    if (this.isNew) return next();
     
-        if (this.password !== this._confirmPassword) {
+    if (this.password !== this._confirmPassword) {
         this.invalidate('confirmPassword', 'Passwords do not match');
-        }
+    };
 
-        if (this.email !== this._confirmEmail) {
+    if (this.email !== this._confirmEmail) {
         this.invalidate('confirmEmail', 'Emails do not match');
-        }
-
-    }
+    };
 
   next();
-
 });  
 
 userSchema.pre('save', async function () {
