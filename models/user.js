@@ -25,6 +25,9 @@ const userSchema = new Schema({
         trim:true,
         select: false
     },
+    passwordChangedAt:{
+      type: Date,
+    },
     role: {
         type: String,
         enum: ['user', 'admin'],
@@ -61,6 +64,18 @@ userSchema.pre('save', async function () {
 
 userSchema.methods.correctPassword = async function(candidatePassword, userPassword){
   return await bcrypt.compare(candidatePassword, userPassword);
+};
+
+userSchema.methods.changedPasswordAfter = function(JWTTimestamp){
+
+  if(this.passwordChangedAt){
+    const changedTimestamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
+        
+    return JWTTimestamp < changedTimestamp;
+  };
+
+  //false means NOT changed
+  return false;
 };
 
 const User = model('users', userSchema);
