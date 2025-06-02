@@ -10,6 +10,7 @@ const generateToken = (userId) => {
 
 const signup = async (reqBody) => {
 
+    // Prevent users from injecting restricted fields like 'role' by explicitly selecting allowed attributes
     const newUser = {
         name: reqBody.name,
         email:reqBody.email,
@@ -32,10 +33,8 @@ const signup = async (reqBody) => {
 
 const login = async (reqBody) => {
 
-    //extracts the email and password
     const {email, password} = reqBody;
 
-    // Check if both email and password were provided
     if(!email || !password){
        throw new AppError(`Please provide email and password!`, 400);
     };
@@ -43,7 +42,6 @@ const login = async (reqBody) => {
     // Retrieve user from database by email (also includes password with .select('+password'))
     const user = await authDao.login(email);
 
-    // If user doesn't exist or password is incorrect, throw an error
     if(!user || !(await user.correctPassword(password, user.password))){
         throw new AppError('Incorrect email or password', 401);
     };

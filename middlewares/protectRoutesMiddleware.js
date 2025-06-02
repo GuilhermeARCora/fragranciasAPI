@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const {promisify} = require('util');
 
 const protect = catchAsync(async (req,res,next) => {
+    
     let token;
     // 1) Getting token and checking if it's there
     if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
