@@ -22,9 +22,15 @@ const userSchema = new Schema({
         type:String,
         required:[true, 'Password is required'],
         minlength: [6,'The password must have at least 6 characters'],
-        trim:true
+        trim:true,
+        select: false
+    },
+    role: {
+        type: String,
+        enum: ['user', 'admin'],
+        default: 'user'
     }
-});
+}, { strict: true });
 
 userSchema.virtual('confirmPassword').set(function (value) {
     this._confirmPassword = value;
@@ -35,19 +41,16 @@ userSchema.virtual('confirmEmail').set(function (value) {
   });
 
 userSchema.pre('validate', function (next) {
-  
-    if (this.isNew) return next();
-    
-    if (this.password !== this._confirmPassword) {
-        this.invalidate('confirmPassword', 'Passwords do not match');
-    };
+  if (this.isModified('password') && this.password !== this._confirmPassword) {
+    this.invalidate('confirmPassword', 'Passwords do not match');
+  }
 
-    if (this.email !== this._confirmEmail) {
-        this.invalidate('confirmEmail', 'Emails do not match');
-    };
+  if (this.isModified('email') && this.email !== this._confirmEmail) {
+    this.invalidate('confirmEmail', 'Emails do not match');
+  }
 
   next();
-});  
+});
 
 userSchema.pre('save', async function () {
 

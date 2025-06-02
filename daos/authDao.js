@@ -1,7 +1,7 @@
 const User = require('../models/user');
 
-const signup = async (reqBody) => {
-    return await User.create(reqBody);
+const signup = async (user) => {
+    return await User.create(user);
 };
 
 module.exports = {
