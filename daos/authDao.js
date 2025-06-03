@@ -12,13 +12,18 @@ const forgotPassword = async (email) =>{
     return await User.findOne({  email  });
 };
 
-const resetPassword = () =>{
+const resetPassword = async (hashedToken) =>{
+    return await User.findOne({passwordResetToken:hashedToken, passwordResetExpires: {$gt: Date.now()}});
+};
 
+const updatePassword = async (id) => {
+    return await User.findById(id).select('+password');
 };
 
 module.exports = {
     signup,
     login,
     forgotPassword,
-    resetPassword
+    resetPassword,
+    updatePassword
 }
