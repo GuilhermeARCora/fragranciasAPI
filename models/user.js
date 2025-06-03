@@ -18,6 +18,11 @@ const userSchema = new Schema({
         trim: true,
         match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Please enter a valid email address']
     },
+    role: {
+        type: String,
+        enum: ['user', 'admin'],
+        default: 'user'
+    },
     password:{
         type:String,
         required:[true, 'Password is required'],
@@ -27,11 +32,6 @@ const userSchema = new Schema({
     },
     passwordChangedAt:{
       type: Date,
-    },
-    role: {
-        type: String,
-        enum: ['user', 'admin'],
-        default: 'user'
     }
 }, { strict: true });
 

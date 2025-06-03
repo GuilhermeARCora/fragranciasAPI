@@ -33,7 +33,7 @@ const protect = catchAsync(async (req,res,next) => {
         throw new AppError('User recently changed password! Please log in again.', 401);
     };
 
-    //Grant acess to protected route
+    // Attach the authenticated user to the request object for access in later middlewares/controllers
     req.user = currentUser;
     next();
 });
