@@ -8,7 +8,17 @@ const login = async (email) => {
     return await User.findOne({  email  }).select('+password');
 }
 
+const forgotPassword = async (email) =>{
+    return await User.findOne({  email  });
+};
+
+const resetPassword = () =>{
+
+};
+
 module.exports = {
     signup,
-    login
+    login,
+    forgotPassword,
+    resetPassword
 }

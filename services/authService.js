@@ -52,7 +52,30 @@ const login = async (reqBody) => {
 
 };
 
+const forgotPassword = async (reqBody) => {
+
+    const email = reqBody.email;
+    const user = await authDao.forgotPassword(email);
+
+    if(!user){
+        throw new AppError('There is no user with this email address.', 404);
+    }
+
+    const resetToken = user.createPasswordResetToken();
+    await user.save({ validateBeforeSave: false });
+
+    return{
+        resetToken
+    };
+};
+
+const resetPassword = () =>{
+
+};
+
 module.exports = {
     signup,
-    login
+    login,
+    forgotPassword,
+    resetPassword
 }

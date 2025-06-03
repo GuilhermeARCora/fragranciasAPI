@@ -26,7 +26,19 @@ const login = catchAsync(async (req,res,next) => {
 
 });
 
+const forgotPassword = catchAsync(async (req,res,next) => {
+
+    const user = await authService.forgotPassword(req.body);
+
+});
+
+const resetPassword = (req,res,next) => {
+
+};
+
 module.exports = {
     signup,
-    login
+    login,
+    forgotPassword,
+    resetPassword
 };

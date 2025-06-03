@@ -1,5 +1,6 @@
 const { Schema, model } = require('mongoose');
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 
 const userSchema = new Schema({
     
@@ -30,11 +31,12 @@ const userSchema = new Schema({
         trim:true,
         select: false
     },
-    passwordChangedAt:{
-      type: Date,
-    }
+    passwordChangedAt: Date,
+    passwordResetToken: String,
+    passwordResetExpires: Date
 }, { strict: true });
 
+//VIRTUAL PROPERTIES
 userSchema.virtual('confirmPassword').set(function (value) {
     this._confirmPassword = value;
   });
@@ -43,6 +45,7 @@ userSchema.virtual('confirmEmail').set(function (value) {
     this._confirmEmail = value;
   });
 
+//MONGOOSE MIDDLEWARE 
 userSchema.pre('validate', function (next) {
   if (this.isModified('password') && this.password !== this._confirmPassword) {
     this.invalidate('confirmPassword', 'Passwords do not match');
@@ -62,6 +65,7 @@ userSchema.pre('save', async function () {
   this.password = await bcrypt.hash(this.password, 12);
 });
 
+// INSTANCE METHODS
 userSchema.methods.correctPassword = async function(candidatePassword, userPassword){
   return await bcrypt.compare(candidatePassword, userPassword);
 };
@@ -76,6 +80,18 @@ userSchema.methods.changedPasswordAfter = function(JWTTimestamp){
 
   //false means NOT changed
   return false;
+};
+
+// TODO: Improve this instance method, try to make the attributes virtual.
+userSchema.methods.createPasswordResetToken = function() {
+  const resetToken = crypto.randomBytes(32).toString('hex');
+
+  this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+  console.log({resetToken}, this.passwordResetToken );
+  //10 minutes
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
+
+  return resetToken;
 };
 
 const User = model('users', userSchema);
