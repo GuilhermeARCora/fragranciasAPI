@@ -41,14 +41,27 @@ const findAll = catchAsync(async (req,res,next) => {
 
 });
 
-const updatePatch = catchAsync(async (req,res,next) => {
+const updateUserByAdmin = catchAsync(async (req,res,next) => {
   
-  const updated = await userService.updatePatch(req.params.id, req.body); 
+  const updated = await userService.updateUserByAdmin(req.params.id, req.body); 
 
   res.status(200).json({
     status: "success",
     data:{
         updated
+    }
+  });
+
+});
+
+const updateUserByUser = catchAsync(async (req,res,next) => {
+  
+  const updatedUser = await userService.updateUserByUser(req.body, req.user); 
+
+  res.status(200).json({
+    status: "success",
+    data:{
+        updatedUser
     }
   });
 
@@ -67,7 +80,8 @@ const deleteOne = catchAsync(async (req,res,next) =>{
 
 module.exports = {
     createOne,
-    updatePatch,
+    updateUserByAdmin,
+    updateUserByUser,
     deleteOne,
     findOne,
     findAll

@@ -12,12 +12,21 @@ const findAll = () =>{
     return User.find()
 };
 
-const updatePatch = async ({ id, ...data }) => {
+const updateUserByAdmin = async ({ id, ...data }) => {
   
     return await User.findByIdAndUpdate(id, data, {
         new: true,
         runValidators: true
     });
+};
+
+const updateUserByUser = async ({ id, ...filteredBody }) => {
+  
+    return await User.findByIdAndUpdate(id, filteredBody, {
+        new: true,
+        runValidators: true
+    });
+
 };
 
 const deleteOne = async (id) => {
@@ -26,7 +35,8 @@ const deleteOne = async (id) => {
 
 module.exports = {
     createOne,
-    updatePatch,
+    updateUserByAdmin,
+    updateUserByUser,
     deleteOne,
     findOne,
     findAll
