@@ -5,7 +5,7 @@ const authController = require('../controllers/authController');
 const protectRoutesMiddleware = require('../middlewares/protectRoutesMiddleware');
 const restrictRouteMiddleware = require('../middlewares/restrictRoutesMiddleware');
 
-//user registering and getting his JWT token
+//user registering/login and getting his JWT token
 router.post('/signup', authController.signup);
 router.post('/login', authController.login);
 

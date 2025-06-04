@@ -4,9 +4,11 @@ const productRouter = require('./productRoutes');
 const userRouter = require('./userRoutes');
 const AppError = require('../utils/appError');
 
+//main file for routes! Making the specic routing files thinner, and effortlessly spotting all main endpoints in the API.
 router.use('/products', productRouter);
 router.use('/users', userRouter);
 
+//Handles unexisting routes
 router.all('*',(req,res,next)=>{
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
