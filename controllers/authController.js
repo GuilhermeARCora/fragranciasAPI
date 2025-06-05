@@ -3,7 +3,7 @@ const authService = require('../services/authService');
 
 const signup = catchAsync(async (req,res,next) => {
     
-    const {user, token} = await authService.signup(req.body);
+    const {user, token} = await authService.signup(req.body, res);
 
     res.status(201).json({
         status:"success",
@@ -17,7 +17,7 @@ const signup = catchAsync(async (req,res,next) => {
 
 const login = catchAsync(async (req,res,next) => {
 
-    const token = await authService.login(req.body);
+    const token = await authService.login(req.body, res);
 
     res.status(200).json({
         status:"success",
@@ -39,7 +39,7 @@ const forgotPassword = catchAsync(async (req,res,next) => {
 
 const resetPassword = catchAsync(async (req,res,next) => {
 
-    const token = await authService.resetPassword(req);
+    const token = await authService.resetPassword(req, res);
 
     res.status(200).json({
         status:"success",
@@ -50,7 +50,7 @@ const resetPassword = catchAsync(async (req,res,next) => {
 
 const updatePassword = catchAsync(async (req,res,next) => {
 
-    const token = await authService.updatePassword(req);
+    const token = await authService.updatePassword(req, res);
 
      res.status(200).json({
         status:"success",

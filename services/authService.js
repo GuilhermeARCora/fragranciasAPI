@@ -4,13 +4,25 @@ const AppError = require('.././utils/appError');
 const {sendEmail} = require('../utils/email');
 const crypto = require('crypto');
 
-const generateToken = (userId) => {
-  return jwt.sign({ id: userId }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN,
-  });
+const generateToken = (userId, res) => {
+
+    const token = jwt.sign({ id: userId }, process.env.JWT_SECRET, {
+        expiresIn: process.env.JWT_EXPIRES_IN,
+    });
+
+    const cookieOptions = {
+        expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
+        httpOnly: true
+    };
+
+    if(process.env.NODE_ENV === 'production') cookieOptions.secure = true;
+
+    res.cookie('jwt', token, cookieOptions);
+
+  return token; 
 };
 
-const signup = async (reqBody) => {
+const signup = async (reqBody, res) => {
 
     // Prevent users from injecting restricted fields like 'role' by explicitly selecting allowed attributes
     const newUser = {
@@ -25,7 +37,9 @@ const signup = async (reqBody) => {
 
     const createdUser = await authDao.signup(newUser);
 
-    const token = generateToken(createdUser.id);
+    createdUser.password = undefined;
+
+    const token = generateToken(createdUser.id, res);
 
     return {
         user: createdUser,
@@ -33,7 +47,7 @@ const signup = async (reqBody) => {
     };
 };
 
-const login = async (reqBody) => {
+const login = async (reqBody, res) => {
 
     const {email, password} = reqBody;
 
@@ -48,7 +62,7 @@ const login = async (reqBody) => {
         throw new AppError('Incorrect email or password', 401);
     };
 
-    const token = generateToken(user._id);
+    const token = generateToken(user._id, res);
 
     return token;
 
@@ -91,7 +105,7 @@ const forgotPassword = async (req) => {
 
 };
 
-const resetPassword = async (req) => {
+const resetPassword = async (req, res) => {
 
     const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
 
@@ -107,12 +121,12 @@ const resetPassword = async (req) => {
     user.passwordResetToken = undefined;
     await user.save();
 
-    const token = generateToken(user.id);
+    const token = generateToken(user.id, res);
 
     return token;
 };
 
-const updatePassword = async (req) => {
+const updatePassword = async (req, res) => {
 
     const user = await authDao.updatePassword(req.user.id);
 
@@ -124,7 +138,7 @@ const updatePassword = async (req) => {
     user.confirmPassword = req.body.confirmPassword;
     await user.save();
 
-    const token = generateToken(user.id);
+    const token = generateToken(user.id, res);
 
     return token;
 
