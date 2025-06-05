@@ -49,7 +49,8 @@ const signup = async (reqBody, res) => {
 
 const login = async (reqBody, res) => {
 
-    const {email, password} = reqBody;
+    const email = reqBody.email.toLowerCase().trim();
+    const password = reqBody.password;
 
     if(!email || !password){
        throw new AppError(`Please provide email and password!`, 400);
