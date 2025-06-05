@@ -4,6 +4,7 @@ const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const xss = require('xss-clean');
 const mongoSanitize = require('express-mongo-sanitize');
+const hpp = require('hpp');
 const app = express();
 
 const globalErrorHandler = require('./controllers/errorController');
@@ -34,6 +35,11 @@ app.use(mongoSanitize());
 
 // Data sanitization against XSS, html malicious code
 app.use(xss());
+
+//Prevent parameter pollution, does not allow duplicate params in querys, but its possible to whitelist spcific ones.
+app.use(hpp({ 
+  whitelist: ['price']
+}));
 
 // Routes
 app.use('/api/v1', apiRouter);
