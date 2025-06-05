@@ -16,6 +16,7 @@ router.patch('/resetPassword/:token', authController.resetPassword);
 //user logged in
 router.patch('/updateMyPassword',protectRoutesMiddleware.protect, authController.updatePassword);
 router.patch('/updateMe', protectRoutesMiddleware.protect, userController.updateUserByUser);
+router.delete('/deactivateMe', protectRoutesMiddleware.protect, userController.deactivateUserByUser);
 
 //admin CRUD operations regarding Users
 router.route('/')

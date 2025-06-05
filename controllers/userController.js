@@ -67,6 +67,17 @@ const updateUserByUser = catchAsync(async (req,res,next) => {
 
 });
 
+const deactivateUserByUser = catchAsync(async (req,res,next) => {
+
+  const deletedUser = await userService.deactivateUserByUser(req.user.id); 
+
+  res.status(204).json({
+    status: "success",
+    data: null
+  });
+
+});
+
 const deleteOne = catchAsync(async (req,res,next) =>{
   
   await userService.deleteOne(req.params.id);
@@ -84,5 +95,6 @@ module.exports = {
     updateUserByUser,
     deleteOne,
     findOne,
-    findAll
+    findAll,
+    deactivateUserByUser
 };

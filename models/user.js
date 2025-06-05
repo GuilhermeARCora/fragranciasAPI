@@ -33,7 +33,12 @@ const userSchema = new Schema({
     },
     passwordChangedAt: Date,
     passwordResetToken: String,
-    passwordResetExpires: Date
+    passwordResetExpires: Date,
+    active:{
+      type: Boolean,
+      default: true,
+      select: false
+    }
 }, { strict: true });
 
 //VIRTUAL PROPERTIES
@@ -71,6 +76,12 @@ userSchema.pre('save', async function (next) {
 
   this.passwordChangedAt = Date.now() - 1000;
   
+});
+
+//FOR EVERY query that starts with 'find', the active attribute will be checked, if its equal to false, the document will not be retrieved.
+userSchema.pre(/^find/, function(next){
+  this.where({ active: {$ne:false} });
+  next();
 });
 
 // INSTANCE METHODS

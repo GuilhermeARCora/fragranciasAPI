@@ -29,6 +29,12 @@ const updateUserByUser = async ({ id, ...filteredBody }) => {
 
 };
 
+const deactivateUserByUser = async (id) => {
+  
+    return await User.findByIdAndUpdate(id, { active: false });
+
+};
+
 const deleteOne = async (id) => {
     return await User.findByIdAndDelete(id);
 };
@@ -39,5 +45,6 @@ module.exports = {
     updateUserByUser,
     deleteOne,
     findOne,
-    findAll
+    findAll,
+    deactivateUserByUser
 }

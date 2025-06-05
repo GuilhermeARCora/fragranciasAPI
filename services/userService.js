@@ -70,6 +70,14 @@ const updateUserByUser = async (reqBody, reqUser) => {
   return updated;
 };
 
+const deactivateUserByUser = async (id) => {
+
+  const updated = await userDao.deactivateUserByUser(id);
+
+  return updated;
+};
+
+
 const deleteOne = async (id) => {
 
   const result = await userDao.deleteOne(id);
@@ -87,5 +95,6 @@ module.exports = {
     updateUserByUser,
     deleteOne,
     findOne,
-    findAll
+    findAll,
+    deactivateUserByUser
 };
