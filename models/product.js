@@ -10,6 +10,10 @@ const productSchema = new Schema({
         secretProduct: {
             type: Boolean,
             default: false
+        },
+        photo:{
+            type: String,
+            default : 'default.png'
         }
 });
 

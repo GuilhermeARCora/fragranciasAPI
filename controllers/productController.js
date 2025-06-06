@@ -3,6 +3,10 @@ const catchAsync = require('../utils/catchAsync');
 
 const createOne = catchAsync(async (req,res,next) => {
   
+  if (req.file) {
+    req.body.photo = req.file.filename;
+  };
+
   const created = await productService.createOne(req.body);
 
   res.status(201).json({
