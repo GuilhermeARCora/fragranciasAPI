@@ -26,6 +26,23 @@ const login = catchAsync(async (req,res,next) => {
 
 });
 
+const logout = (req,res,next) => {
+
+    // Overwrites the existing cookie
+    res.cookie('jwt', '', {
+        expires: new Date(Date.now() + 10 * 1000), // expires in 10s
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'Strict'
+    });
+
+    res.status(200).json({
+        status: 'success',
+        message: 'Logged out successfully'
+    });
+
+};
+
 const forgotPassword = catchAsync(async (req,res,next) => {
 
    const emailSent = await authService.forgotPassword(req);
@@ -62,6 +79,7 @@ const updatePassword = catchAsync(async (req,res,next) => {
 module.exports = {
     signup,
     login,
+    logout,
     forgotPassword,
     resetPassword,
     updatePassword

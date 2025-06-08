@@ -14,18 +14,23 @@ router.post('/forgotPassword', authController.forgotPassword);
 router.patch('/resetPassword/:token', authController.resetPassword);
 
 //user logged in
-router.patch('/updateMyPassword',protectRoutesMiddleware.protect, authController.updatePassword);
-router.patch('/updateMe', protectRoutesMiddleware.protect, userController.updateUserByUser);
-router.delete('/deactivateMe', protectRoutesMiddleware.protect, userController.deactivateUserByUser);
+router.use(protectRoutesMiddleware.protect);
 
-//admin CRUD operations regarding Users
+router.delete('/logout', authController.logout);
+router.patch('/updateMyPassword',authController.updatePassword);
+router.patch('/updateMe', userController.updateUserByUser);
+router.delete('/deactivateMe', userController.deactivateUserByUser);
+
+//admin ONLY, CRUD operations regarding Users
+router.use(restrictRouteMiddleware.restrictTo('admin'));
+
 router.route('/')
-    .get(protectRoutesMiddleware.protect,restrictRouteMiddleware.restrictTo('admin'), userController.findAll)
-    .post(protectRoutesMiddleware.protect,restrictRouteMiddleware.restrictTo('admin'), userController.createOne);
+    .get(userController.findAll)
+    .post(userController.createOne);
 
 router.route('/:id')
-    .get(protectRoutesMiddleware.protect,restrictRouteMiddleware.restrictTo('admin'), userController.findOne)
-    .patch(protectRoutesMiddleware.protect,restrictRouteMiddleware.restrictTo('admin'), userController.updateUserByAdmin)
-    .delete(protectRoutesMiddleware.protect,restrictRouteMiddleware.restrictTo('admin'), userController.deleteOne);
+    .get(userController.findOne)
+    .patch(userController.updateUserByAdmin)
+    .delete(userController.deleteOne);
 
 module.exports = router;

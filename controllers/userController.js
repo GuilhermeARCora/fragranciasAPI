@@ -82,7 +82,7 @@ const deleteOne = catchAsync(async (req,res,next) =>{
   
   await userService.deleteOne(req.params.id);
 
-  res.status(200).json({
+  res.status(204).json({
       status:"success",
       data: null
   })

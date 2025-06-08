@@ -12,10 +12,10 @@ const generateToken = (userId, res) => {
 
     const cookieOptions = {
         expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
-        httpOnly: true
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'Strict'
     };
-
-    if(process.env.NODE_ENV === 'production') cookieOptions.secure = true;
 
     res.cookie('jwt', token, cookieOptions);
 
@@ -67,6 +67,10 @@ const login = async (reqBody, res) => {
 
     return token;
 
+};
+
+const logout = async () => {
+    //not needed for now
 };
 
 const forgotPassword = async (req) => {
@@ -148,6 +152,7 @@ const updatePassword = async (req, res) => {
 module.exports = {
     signup,
     login,
+    logout,
     forgotPassword,
     resetPassword,
     updatePassword

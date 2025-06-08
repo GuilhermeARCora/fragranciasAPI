@@ -8,6 +8,10 @@ const login = async (email) => {
     return await User.findOne({  email  }).select('+password');
 }
 
+const logout = async() => {
+    //not needed for now
+};
+
 const forgotPassword = async (email) =>{
     return await User.findOne({  email  });
 };
@@ -23,6 +27,7 @@ const updatePassword = async (id) => {
 module.exports = {
     signup,
     login,
+    logout,
     forgotPassword,
     resetPassword,
     updatePassword

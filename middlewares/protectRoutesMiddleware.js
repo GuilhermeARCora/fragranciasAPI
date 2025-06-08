@@ -8,18 +8,21 @@ const protect = catchAsync(async (req,res,next) => {
     
     let token;
     // 1) Getting token and checking if it's there
-    if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
-        //gets just the JWT part, ignores the Bearer
+
+    if (req.cookies && req.cookies.jwt) {
+    token = req.cookies.jwt;
+    } else if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
         token = req.headers.authorization.split(' ')[1];
     };
 
-    if(!token){
+    if(!token || token === ''){
         throw new AppError('You are not logged in! Please log in to get access.', 401);
     };
 
     // 2) Verification token
     // Verifys if the token has not been tempered with
     const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET)
+    
     // In case of an error, the global error handling middleware has 2 functions that deal with an expired and an invalid token.
 
     // 3) Check if user still exists
