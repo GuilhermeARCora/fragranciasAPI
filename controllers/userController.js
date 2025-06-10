@@ -2,12 +2,14 @@ const userService = require('../services/userService');
 const catchAsync = require('../utils/catchAsync');
 
 const getMe = (req, res) => {
+  
   res.status(200).json({
-    status: 'success',
-    data: {
-      user: req.user
-    }
-  });
+        status: 'success',
+        data: {
+          user: req.user
+        }
+    });
+  
 };
 
 const createOne = catchAsync(async (req,res,next) => {

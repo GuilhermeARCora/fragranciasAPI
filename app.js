@@ -8,6 +8,8 @@ const mongoSanitize = require('express-mongo-sanitize');
 const hpp = require('hpp');
 const cors = require('cors');
 const path = require('path');
+const cookieParser = require('cookie-parser');
+
 const app = express();
 
 const globalErrorHandler = require('./controllers/errorController');
@@ -59,6 +61,8 @@ app.use(xss());
 app.use(hpp({ 
   whitelist: ['price']
 }));
+
+app.use(cookieParser());
 
 // Routes
 app.use('/api/v1', apiRouter);

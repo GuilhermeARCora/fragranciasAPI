@@ -26,7 +26,7 @@ const protect = catchAsync(async (req,res,next) => {
     // In case of an error, the global error handling middleware has 2 functions that deal with an expired and an invalid token.
 
     // 3) Check if user still exists
-    const currentUser = await User.findById(decoded.id);
+    const currentUser = await User.findById(decoded._id);
     if(!currentUser){
         throw new AppError('The user belonging to this token does no longer exist', 401);
     };
