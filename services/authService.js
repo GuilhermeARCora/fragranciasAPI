@@ -3,10 +3,12 @@ const jwt = require('jsonwebtoken');
 const AppError = require('.././utils/appError');
 const {sendEmail} = require('../utils/email');
 const crypto = require('crypto');
+const filterFields = require('../utils/filterFields');
+const User = require('../models/user');
 
 const generateToken = (userId, res) => {
 
-    const token = jwt.sign({ id: userId }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ _id: userId }, process.env.JWT_SECRET, {
         expiresIn: process.env.JWT_EXPIRES_IN,
     });
 
@@ -14,7 +16,7 @@ const generateToken = (userId, res) => {
         expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'Strict'
+        sameSite: process.env.NODE_ENV === 'production' ? "Strict" : "Lax"
     };
 
     res.cookie('jwt', token, cookieOptions);
@@ -25,21 +27,19 @@ const generateToken = (userId, res) => {
 const signup = async (reqBody, res) => {
 
     // Prevent users from injecting restricted fields like 'role' by explicitly selecting allowed attributes
-    const newUser = {
-        name: reqBody.name,
-        email:reqBody.email,
-        password: reqBody.password
-    };
+    const safeData = filterFields(reqBody, 'name', 'password', 'email', 'confirmPassword', 'confirmEmail');
 
-    // Set the virtuals manually
-    newUser.confirmPassword = reqBody.confirmPassword;
-    newUser.confirmEmail = reqBody.confirmEmail;
+    //full user instance (to trigger virtual validation)
+    const user = new User(safeData);
 
-    const createdUser = await authDao.signup(newUser);
+    //Trigger validation manually
+    await user.validate(); // this will throw if confirm fields are wrong
+
+    const createdUser = await authDao.signup(user);
 
     createdUser.password = undefined;
 
-    const token = generateToken(createdUser.id, res);
+    const token = generateToken(createdUser._id, res);
 
     return {
         user: createdUser,
@@ -126,7 +126,7 @@ const resetPassword = async (req, res) => {
     user.passwordResetToken = undefined;
     await user.save();
 
-    const token = generateToken(user.id, res);
+    const token = generateToken(user._id, res);
 
     return token;
 };
@@ -143,7 +143,7 @@ const updatePassword = async (req, res) => {
     user.confirmPassword = req.body.confirmPassword;
     await user.save();
 
-    const token = generateToken(user.id, res);
+    const token = generateToken(user._id, res);
 
     return token;
 

@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
@@ -5,6 +6,8 @@ const helmet = require('helmet');
 const xss = require('xss-clean');
 const mongoSanitize = require('express-mongo-sanitize');
 const hpp = require('hpp');
+const cors = require('cors');
+const path = require('path');
 const app = express();
 
 const globalErrorHandler = require('./controllers/errorController');
@@ -13,7 +16,23 @@ const apiRouter = require('./routes/index');
 // Set Security HTTP headers
 app.use(helmet());
 
-// Development logging
+const allowedOrigin = process.env.NODE_ENV === 'production'
+  ? process.env.FRONTEND_URL
+  : process.env.FRONTEND_DEV_URL;
+
+// Enable CORS with credentials support (for cross-origin cookies)
+app.use(cors({
+  origin: allowedOrigin,
+  credentials: true
+}));
+
+if (process.env.NODE_ENV === 'production') {
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+  });
+}
+
+// Enable detailed request logging in development
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
