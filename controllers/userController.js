@@ -3,10 +3,14 @@ const catchAsync = require('../utils/catchAsync');
 
 const getMe = (req, res) => {
   
+  const user = req.user.toObject();
+
+  delete user.__v;
+
   res.status(200).json({
         status: 'success',
         data: {
-          user: req.user
+          user
         }
     });
   
