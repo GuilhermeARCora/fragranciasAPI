@@ -1,16 +1,18 @@
 const catchAsync = require('../utils/catchAsync');
 const authService = require('../services/authService');
+const sendResponse = require('../utils/sendResponse');
 
 const signup = catchAsync(async (req,res,next) => {
     
     const {user, token} = await authService.signup(req.body, res);
 
-    res.status(201).json({
-        status:"success",
+    const filteredUser = user.toObject();
+
+    delete filteredUser.__v
+
+    sendResponse(res, 201, "sucess",{
         token,
-        data:{
-            user
-        }
+        data: {filteredUser}
     });
 
 });
@@ -19,10 +21,7 @@ const login = catchAsync(async (req,res,next) => {
 
     const token = await authService.login(req.body, res);
 
-    res.status(200).json({
-        status:"success",
-        token
-    });
+    sendResponse(res,200,"success", {token});
 
 });
 
@@ -36,10 +35,7 @@ const logout = (req,res,next) => {
         sameSite: 'Strict'
     });
 
-    res.status(200).json({
-        status: 'success',
-        message: 'Logged out successfully'
-    });
+    sendResponse(res,200,'Logged out successfully');
 
 };
 
@@ -47,10 +43,7 @@ const forgotPassword = catchAsync(async (req,res,next) => {
 
    const emailSent = await authService.forgotPassword(req);
 
-        res.status(200).json({
-            status: 'success',
-            message:'Token sent to email'
-        });
+    sendResponse(res,200,'Token sent to email');
 
 });
 
@@ -58,10 +51,7 @@ const resetPassword = catchAsync(async (req,res,next) => {
 
     const token = await authService.resetPassword(req, res);
 
-    res.status(200).json({
-        status:"success",
-        token
-    });
+    sendResponse(res,200,"success",{token});
 
 });
 
@@ -69,10 +59,7 @@ const updatePassword = catchAsync(async (req,res,next) => {
 
     const token = await authService.updatePassword(req, res);
 
-     res.status(200).json({
-        status:"success",
-        token
-    });
+    sendResponse(res,200,"success",{token});
 
 });
 
