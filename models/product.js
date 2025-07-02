@@ -3,18 +3,22 @@ const {Schema, model} = require('mongoose');
 const productSchema = new Schema({
         name:{
             type:String,
-            required: true
+            required: true,
+            trim:true
         },
         price: Number,
         description: String,
         secretProduct: {
             type: Boolean,
             default: false
-        },
-        photo:{
-            type: String,
-            default : 'default.png'
         }
+},{ strict: true });
+
+productSchema.set('toJSON', {
+  transform(doc, ret) {
+    delete ret.__v;
+    return ret;
+  }
 });
 
 const Product = model('products', productSchema);

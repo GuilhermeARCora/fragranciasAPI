@@ -12,8 +12,8 @@ const cookieParser = require('cookie-parser');
 
 const app = express();
 
-const globalErrorHandler = require('./controllers/errorController');
-const apiRouter = require('./routes/index');
+const globalErrorHandler = require('../controllers/errorController');
+const apiRouter = require('../routes/index');
 
 // Set Security HTTP headers
 app.use(helmet());
