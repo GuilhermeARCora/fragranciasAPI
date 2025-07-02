@@ -1,33 +1,12 @@
 const Product = require('../models/product');
 
-const createOne = async (obj) => {
-    return await Product.create(obj);
-};
+const createOneProduct = async(data) =>{
 
-const findOne = async (id) => {
-    return await Product.findById(id);
-};
+  const product = await Product.create(data);
 
-const findAll = () =>{
-    return Product.find()
-};
-
-const updatePatch = async ({ id, ...data }) => {
-  
-    return await Product.findByIdAndUpdate(id, data, {
-        new: true,
-        runValidators: true
-    });
-};
-
-const deleteOne = async (id) => {
-    return await Product.findByIdAndDelete(id);
+  return product;
 };
 
 module.exports = {
-    createOne,
-    updatePatch,
-    deleteOne,
-    findOne,
-    findAll
-}
+  createOneProduct
+};
