@@ -13,4 +13,4 @@ A practice API built with Node.js, Express, Mongoose, and MongoDB, following an 
 
 ## 💻 Frontend
 
-This API is consumed by: https://github.com/GuilhermeARCora/fraganciasFront
+This API is consumed by: https://github.com/GuilhermeARCora/fragranciasFront
