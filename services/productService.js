@@ -1,12 +1,9 @@
 const productDao = require('../daos/productDao');
 const AppError = require('../utils/appError');
-const filterFields = require('../utils/filterFields');
 
-const createOneProduct = async(reqBodyObj) =>{
+const createOneProduct = async(payload) =>{
 
-  const safeProduct = filterFields(reqBodyObj, "name", "price", "description");
-
-  const createdProduct = await productDao.createOneProduct(safeProduct);
+  const createdProduct = await productDao.createOneProduct(payload);
 
   return createdProduct;
 };

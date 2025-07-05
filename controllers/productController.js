@@ -4,7 +4,8 @@ const productService = require('../services/productService');
 
 const createOneProduct = catchAsync(async(req,res,next) => {
 
-  const product = await productService.createOneProduct(req.body);
+  const payload = { ...req.body, imageUrl: req.fileUrl };
+  const product = await productService.createOneProduct(payload);
 
   sendResponse(res, 201, "success", {product});
 

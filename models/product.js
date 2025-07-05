@@ -11,6 +11,10 @@ const productSchema = new Schema({
         secretProduct: {
             type: Boolean,
             default: false
+        },
+        imageUrl:{
+          type: String,
+          required: true
         }
 },{ strict: true });
 
