@@ -3,15 +3,24 @@ const router = express.Router();
 const productController = require('../controllers/productController');
 const protectRoutesMiddleware = require('../middlewares/protectRoutesMiddleware');
 const restrictRouteMiddleware = require('../middlewares/restrictRoutesMiddleware');
-const uploadPhoto = require('../middlewares/uploadPhotoMiddleware');
+const imageUpload = require('../middlewares/uploadImageMiddleware');
 
+
+router.route('/').get(productController.getAllProducts);
+router.route('/:id').get(productController.getOneProduct);
+
+router.use(protectRoutesMiddleware.protect);
+router.use(restrictRouteMiddleware.restrictTo('admin'));
+
+// bucket = "products-images, folder = "products/", fieldName = "image" "
 router.route('/')
-    .get(productController.findAll)
-    .post(protectRoutesMiddleware.protect,uploadPhoto('products', 'product'), restrictRouteMiddleware.restrictTo('admin'), productController.createOne);
-
+    .post(...imageUpload('products-images', { folder: 'products/', fieldName: 'image' }),
+        productController.createOneProduct
+    );
 router.route('/:id')
-    .get(productController.findOne)
-    .patch(protectRoutesMiddleware.protect, uploadPhoto('products', 'product'), restrictRouteMiddleware.restrictTo('admin'), productController.updatePatch)
-    .delete(protectRoutesMiddleware.protect,restrictRouteMiddleware.restrictTo('admin'), productController.deleteOne);
+    .patch(...imageUpload('products-images', { folder: 'products/', fieldName: 'image'}),
+        productController.editOneProduct
+    )
+    .delete(productController.deleteOneProduct);
 
 module.exports = router;

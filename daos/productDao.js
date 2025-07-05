@@ -1,33 +1,47 @@
 const Product = require('../models/product');
 
-const createOne = async (obj) => {
-    return await Product.create(obj);
+const createOneProduct = async(data) =>{
+
+  const product = await Product.create(data);
+
+  return product;
 };
 
-const findOne = async (id) => {
-    return await Product.findById(id);
+const getAllProducts = async() =>{
+
+  const product = await Product.find();
+
+  return product;
 };
 
-const findAll = () =>{
-    return Product.find()
+const getOneProduct = async(id) =>{
+
+  const product = await Product.findById(id);
+
+  return product;
 };
 
-const updatePatch = async ({ id, ...data }) => {
-  
-    return await Product.findByIdAndUpdate(id, data, {
+const editOneProduct = async({id, ...updates}) =>{
+
+  const product = await Product.findByIdAndUpdate(id, updates, {
         new: true,
         runValidators: true
     });
+
+  return product;
 };
 
-const deleteOne = async (id) => {
-    return await Product.findByIdAndDelete(id);
+const deleteOneProduct = async(id) =>{
+
+  const deleted = await Product.findByIdAndDelete(id);
+
+  return deleted;
 };
 
 module.exports = {
-    createOne,
-    updatePatch,
-    deleteOne,
-    findOne,
-    findAll
-}
+  createOneProduct,
+  getAllProducts,
+  getOneProduct,
+  editOneProduct,
+  deleteOneProduct
+};

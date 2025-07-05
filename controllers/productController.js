@@ -1,78 +1,55 @@
+const catchAsync = require("../utils/catchAsync");
+const sendResponse = require('../utils/sendResponse');
 const productService = require('../services/productService');
-const catchAsync = require('../utils/catchAsync');
 
-const createOne = catchAsync(async (req,res,next) => {
-  
-  if (req.file) {
-    req.body.photo = req.file.filename;
-  };
+const createOneProduct = catchAsync(async(req,res,next) => {
 
-  const created = await productService.createOne(req.body);
+  const payload = { ...req.body, imageUrl: req.fileUrl };
+  const product = await productService.createOneProduct(payload);
 
-  res.status(201).json({
-    status: "success",
-    data:{
-        created
-    }
-  });
+  sendResponse(res, 201, "success", {product});
 
 });
 
-const findOne = catchAsync(async (req,res,next) => {
-  
-  const found = await productService.findOne(req.params.id); 
+const getAllProducts = catchAsync(async(req,res,next) => {
 
-  res.status(200).json({
-    status: "success",
-    data:{
-       found
-    }
-  });
+  const products = await productService.getAllProducts();
+
+  sendResponse(res,200,"success",{
+      products, 
+      amount: products.length
+    });
 
 });
 
-const findAll = catchAsync(async (req,res,next) => {
-  
-  const data = await productService.findAll(req.query);    
+const getOneProduct = catchAsync(async(req,res,next) => {
 
-  res.status(200).json({
-    status: 'success',
-    results: data.length,
-    data: {
-      data
-    }
-  });
+  const product = await productService.getOneProduct(req.params.id);
+
+  sendResponse(res,200,"success",{product});
 
 });
 
-const updatePatch = catchAsync(async (req,res,next) => {
-  
-  const updated = await productService.updatePatch(req.params.id, req.body); 
+const editOneProduct = catchAsync(async(req,res,next) => {
 
-  res.status(200).json({
-    status: "success",
-    data:{
-        updated
-    }
-  });
+  const product = await productService.editOneProduct(req.params.id, req.body);
+
+  sendResponse(res,200,"success",{product});
 
 });
 
-const deleteOne = catchAsync(async (req,res,next) =>{
-  
-  await productService.deleteOne(req.params.id);
+const deleteOneProduct = catchAsync(async(req,res,next) => {
 
-  res.status(200).json({
-      status:"success",
-      data: null
-  })
+  const deleted = await productService.deleteOneProduct(req.params.id);
+
+  sendResponse(res,204,"success");
 
 });
 
 module.exports = {
-    createOne,
-    updatePatch,
-    deleteOne,
-    findOne,
-    findAll
+  createOneProduct,
+  getAllProducts,
+  getOneProduct,
+  editOneProduct,
+  deleteOneProduct
 };

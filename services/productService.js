@@ -1,64 +1,59 @@
 const productDao = require('../daos/productDao');
-const APIFeatures = require('../utils/apiFeatures');
 const AppError = require('../utils/appError');
 
-const createOne = async (data) => {
-  return await productDao.createOne(data);
+const createOneProduct = async(payload) =>{
+
+  const createdProduct = await productDao.createOneProduct(payload);
+
+  return createdProduct;
 };
 
-const findOne = async (id) => {
+const getAllProducts = async() =>{
 
-  const foundId = await productDao.findOne(id);
+  const products = await productDao.getAllProducts();
 
-  if (!foundId) {
-    throw new AppError('No data found with that ID', 404);
-  }
- 
-  return foundId;
+  return products;
 };
 
-const findAll = async (reqQuery) => {
+const getOneProduct = async(id) =>{
 
-  const query = productDao.findAll()
-
-  const features = new APIFeatures(query, reqQuery)
-        .filter()
-        .sort()
-        .limitFields()
-        .paginate();
+  const product = await productDao.getOneProduct(id);
   
-  const result = await features.query;
-
-  return result;    
-
+  if(!product){
+    throw new AppError("This products Id does not exist", 404)
+  };
+  
+  return product;
 };
 
-const updatePatch = async (id, updates) => {
+const editOneProduct = async(reqParamsId, body) =>{
 
-  const updated = await productDao.updatePatch({ id, ...updates });
+  const id = reqParamsId;
 
-  if (!updated) {
-    throw new AppError('No data found with that ID', 404);
-  }
- 
-  return updated;
+  const product = await productDao.editOneProduct({id, ...body});
+  
+  if(!product){
+    throw new AppError("This products Id does not exist", 404)
+  };
+  
+  return product;
 };
 
-const deleteOne = async (id) => {
+const deleteOneProduct = async(id) =>{
 
-  const result = await productDao.deleteOne(id);
-
-  if (!result) {
-    throw new AppError('No data found with that ID', 404);
-  }
-
-  return result;
+  const deleted = await productDao.deleteOneProduct(id);
+  
+  if(!deleted){
+    throw new AppError("This products Id does not exist", 404)
+  };
+  
+  return deleted;
 };
 
 module.exports = {
-    createOne,
-    updatePatch,
-    deleteOne,
-    findOne,
-    findAll
+  createOneProduct,
+  getAllProducts,
+  getOneProduct,
+  editOneProduct,
+  deleteOneProduct
 };
