@@ -5,9 +5,9 @@ const protectRoutesMiddleware = require('../middlewares/protectRoutesMiddleware'
 
 router.use(protectRoutesMiddleware.protect);
 
-router.route('/create').post(cartController.createCart);
-router.route('/get').get(cartController.getCart);
-router.route('/addOrEditItem').patch(cartController.addOrEditItem);
-router.route('/deleteItem').delete(cartController.deleteItem);
+router.route('/')
+        .post(cartController.createCart)
+        // .get(cartController.getCart)
+        // .patch(cartController.editCart)
 
 module.exports = router;

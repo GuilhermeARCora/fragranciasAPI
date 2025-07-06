@@ -10,33 +10,24 @@ const createCart = catchAsync(async(req,res,next) => {
 
 });
 
-const getCart = catchAsync(async(req,res,next) => {
+// const getCart = catchAsync(async(req,res,next) => {
 
-    const cart = await cartService.getCart(req.user.id);
+//     const cart = await cartService.getCart(req.user.id);
 
-    sendResponse(res, 200, "success", {cart});
+//     sendResponse(res, 200, "success", {cart});
 
-});
+// });
 
-const addOrEditItem = catchAsync(async(req,res,next) => {
+// const editCart = catchAsync(async(req,res,next) => {
 
-    const cart = await cartService.addOrEditItem(req.user.id, req.body);
+//     const cart = await cartService.editCart(req.user.id, req.body);
 
-    sendResponse(res, 200, "success", {cart});
+//     sendResponse(res, 200, "success", {cart});
 
-});
-
-const deleteItem = catchAsync(async(req,res,next) => {
-
-    const cart = await cartService.deleteItem(req.user.id, req.body);
-
-    sendResponse(res, 204, "success", null);
-
-});
+// });
 
 module.exports = {
     createCart,
-    getCart,
-    addOrEditItem,
-    deleteItem,
+    // getCart,
+    // editCart
 };

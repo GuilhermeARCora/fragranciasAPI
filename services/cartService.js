@@ -1,24 +1,27 @@
-const cartService = require('../daos/cartDao');
+const cartDao = require('../daos/cartDao');
 
-const createCart = (userId, reqBody) => {
+const createCart = async(userId, reqBody) => {
 
+    const ownerOfTheCart = userId;
+    const {items} = reqBody;
+
+    const cart = await cartDao.createCart(ownerOfTheCart, items);
+
+    cart.populate('items.product');
+
+    return cart;
 };
 
-const getCart = (userId) => {
+// const getCart = async(userId) => {
 
-};
+// };
 
-const addOrEditItem = (userId, reqBody) => {
+// const editCart = async(userId, reqBody) => {
 
-};
-
-const deleteItem = (userId, reqBody) => {
-
-};
+// };
 
 module.exports = {
     createCart,
-    getCart,
-    addOrEditItem,
-    deleteItem,
+    // getCart,
+    // editCart
 };

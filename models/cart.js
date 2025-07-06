@@ -4,17 +4,18 @@ const cartSchema = new Schema({
 
     user:{
         type:mongoose.ObjectId,
-        required:[true, 'Name is required']
+        required:[true, 'Name is required'],
+        unique:true
     },
     items:[{
         product: {
-            type: Types.ObjectId,
-            ref: 'Product',     
-            required: [true, 'Product is required']
+            type: mongoose.ObjectId,
+            ref: 'products',     
+            required: [true, 'Product is required'],
+            unique:true
         },
         quantity: {
             type: Number,
-            required: [true, 'Quantity is required'],
             default: 1
         }
     }]
