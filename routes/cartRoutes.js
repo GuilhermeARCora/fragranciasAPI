@@ -7,7 +7,9 @@ router.use(protectRoutesMiddleware.protect);
 
 router.route('/')
         .post(cartController.createCart)
-        // .get(cartController.getCart)
-        // .patch(cartController.editCart)
+        .get(cartController.getCart)
+        .patch(cartController.editCart)
+        
+router.route('/clear').delete(cartController.clearCart);
 
 module.exports = router;

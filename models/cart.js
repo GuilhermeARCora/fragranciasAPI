@@ -11,8 +11,7 @@ const cartSchema = new Schema({
         product: {
             type: mongoose.ObjectId,
             ref: 'products',     
-            required: [true, 'Product is required'],
-            unique:true
+            required: [true, 'Product is required']
         },
         quantity: {
             type: Number,
@@ -22,6 +21,13 @@ const cartSchema = new Schema({
 
 }, { strict: true });
 
-const Cart = model('cart', cartSchema);
+cartSchema.set('toJSON', {
+  transform(doc, ret) {
+    delete ret.__v;
+    return ret;
+  }
+});
+
+const Cart = model('carts', cartSchema);
 
 module.exports = Cart;
