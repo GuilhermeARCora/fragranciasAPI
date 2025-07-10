@@ -3,19 +3,34 @@ const {Schema, model} = require('mongoose');
 const productSchema = new Schema({
         name:{
             type:String,
-            required: true,
-            trim:true
+            required: [true, 'Name is required'],
+            trim:true,
+            unique:true
         },
-        price: Number,
-        description: String,
+        price: {
+          type: String,
+          required:[true, 'Price is required']
+        },
+        description: {
+          type: String,
+          trim:true,
+          required:[true, 'Description is required']
+        },
         secretProduct: {
             type: Boolean,
-            default: false
+            default: false,
+            select:false
         },
         imageUrl:{
           type: String,
-          required: true
-        }
+          trim:true,
+          required: [true, 'ImageURL is required']
+        },
+        categories:[{
+          type:String,
+          require:[true, 'Categories is required'],
+          enum:['a','b','c','d']
+        }]
 },{ strict: true });
 
 productSchema.set('toJSON', {
