@@ -4,7 +4,7 @@ const sendResponse = require('../utils/sendResponse');
 
 const signup = catchAsync(async (req,res,next) => {
     
-    const {user, token} = await authService.signup(req.body, res);
+    const {user, token} = await authService.signup(req.body, res,req);
 
     const filteredUser = user.toObject();
 
