@@ -1,7 +1,7 @@
 const authDao = require('../daos/authDao');
 const jwt = require('jsonwebtoken');
 const AppError = require('.././utils/appError');
-const {sendEmail} = require('../utils/email');
+const Email = require('../utils/email');
 const crypto = require('crypto');
 const filterFields = require('../utils/filterFields');
 const User = require('../models/user');
@@ -24,7 +24,7 @@ const generateToken = (userId, res) => {
   return token; 
 };
 
-const signup = async (reqBody, res) => {
+const signup = async (reqBody, res,req) => {
 
     // Prevent users from injecting restricted fields like 'role' by explicitly selecting allowed attributes
     const safeData = filterFields(reqBody, 'name', 'password', 'email', 'confirmPassword', 'confirmEmail');
@@ -40,6 +40,9 @@ const signup = async (reqBody, res) => {
     createdUser.password = undefined;
 
     const token = generateToken(createdUser._id, res);
+
+    // const url = `${req.protocol}://${req.get('host')}/me`;
+    await new Email(createdUser).sendWelcome();
 
     return {
         user: createdUser,
@@ -80,7 +83,7 @@ const forgotPassword = async (req) => {
 
     if(!user){
         throw new AppError('There is no user with this email address.', 404);
-    }
+    };
 
     const resetToken = user.createPasswordResetToken();
     await user.save({ validateBeforeSave: false });
@@ -90,15 +93,15 @@ const forgotPassword = async (req) => {
     const message = `Forgot your password? Submit a patch request with your new password and passwordConfirm to: ${resetURL}\n
     If you didn't forget your password, ignore this email!`
 
-    const emailSent = await sendEmail({
-        email: user.email,
-        subject:'Your reset token (Valid for 10 min)',
-        message
-    });
+    // const emailSent = await sendEmail({
+    //     email: user.email,
+    //     subject:'Your reset token (Valid for 10 min)',
+    //     message
+    // });
 
     try{
 
-       return emailSent;
+    //    return emailSent;
 
     }catch(err){
 
