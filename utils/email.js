@@ -3,6 +3,8 @@ const pug = require('pug');
 const htmlToText = require('html-to-text');
 const { Resend } = require('resend');
 
+//not 100% functional yet
+
 module.exports = class Email {
   constructor(user, url = null) {
     this.to = user.email;
