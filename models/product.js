@@ -29,9 +29,12 @@ const productSchema = new Schema({
         categories:[{
           type:String,
           require:[true, 'Categories is required'],
-          enum:['a','b','c','d']
+          enum:['aromatizadores', 'autoCuidado', 'CasaEBemEstar', 'novidades']
         }]
-},{ strict: true });
+},{ 
+  strict: true, 
+  timestamps: true
+});
 
 productSchema.set('toJSON', {
   transform(doc, ret) {
