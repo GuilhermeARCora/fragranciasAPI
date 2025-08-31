@@ -7,7 +7,7 @@ const handleCastErrorDB = err => {
 
 const handleDuplicateFieldsDB = err => {
   const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
-  const message = `Duplicate field value: ${value}, Please use another value!`
+  const message = `Campo com valor duplicado: ${value}, Por favor use outro valor!`
   return new AppError(message, 400);
 };
 
@@ -20,9 +20,9 @@ const handleValidationErrorDB = err => {
 
 };
 
-const handleJWTError = () => new AppError('Invalid token. Please log in again', 401);
+const handleJWTError = () => new AppError('Token inválido. Por favor entre em sua conta novamente!', 401);
 
-const handleJWTExpiredError = () => new AppError('Your token has expired. Please log in again', 401);
+const handleJWTExpiredError = () => new AppError('Seu token expirou. Por favor entre em sua conta novamente!', 401);
 
 const sendErrorDev = (err, res) => {
   res.status(err.statusCode).json({
@@ -44,7 +44,7 @@ const sendErrorProd = (err, res) => {
     console.error('ERROR ', err)
     res.status(500).json({
       status:'error',
-      message:'Something went very wrong!'
+      message:'Algo deu errado!'
     })
   }
 

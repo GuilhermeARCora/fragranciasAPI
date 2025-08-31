@@ -7,16 +7,16 @@ const userSchema = new Schema({
     name:{
         type:String,
         trim:true,
-        maxlength: [40, 'The name must not have more than 40 characters'],
-        required: [true, 'Name is required']
+        maxlength: [40, 'O nome não pode ter mais de 40 caracteres'],
+        required: [true, 'Nome é obrigatório']
     },
     email: {
         type: String,
-        required: [true, 'Email is required'],
+        required: [true, 'Email é obrigatório'],
         unique:true,
         lowercase: true,
         trim: true,
-        match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Please enter a valid email address']
+        match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Por favor, insira um email válido']
     },
     role: {
         type: String,
@@ -25,14 +25,12 @@ const userSchema = new Schema({
     },
     password:{
         type:String,
-        required:[true, 'Password is required'],
-        minlength: [6,'The password must have at least 6 characters'],
+        required:[true, 'Password é obrigatório'],
+        minlength: [6,'A senha precisa ter pelo menos 6 caracteres'],
         trim:true,
         select: false
     },
     passwordChangedAt: Date,
-    passwordResetToken: String,
-    passwordResetExpires: Date,
     active:{
       type: Boolean,
       default: true,
@@ -52,11 +50,11 @@ userSchema.virtual('confirmEmail').set(function (value) {
 //MONGOOSE MIDDLEWARE 
 userSchema.pre('validate', function (next) {
   if (this.isModified('password') && this.password !== this._confirmPassword) {
-    this.invalidate('confirmPassword', 'Passwords do not match');
+    this.invalidate('confirmPassword', 'As senhas não são iguais!');
   }
 
   if (this.isModified('email') && this.email !== this._confirmEmail) {
-    this.invalidate('confirmEmail', 'Emails do not match');
+    this.invalidate('confirmEmail', 'Os emails não são iguais');
   }
 
   next();
@@ -77,12 +75,6 @@ userSchema.pre('save', async function (next) {
   
 });
 
-//FOR EVERY query that starts with 'find', the active attribute will be checked, if its equal to false, the document will not be retrieved.
-userSchema.pre(/^find/, function(next){
-  this.where({ active: {$ne:false} });
-  next();
-});
-
 // INSTANCE METHODS
 userSchema.methods.correctPassword = async function(candidatePassword, userPassword){
   return await bcrypt.compare(candidatePassword, userPassword);
@@ -98,16 +90,6 @@ userSchema.methods.changedPasswordAfter = function(JWTTimestamp){
 
   //false means NOT changed
   return false;
-};
-
-userSchema.methods.createPasswordResetToken = function() {
-  const resetToken = crypto.randomBytes(32).toString('hex');
-
-  this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
-  //10 minutes
-  this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
-
-  return resetToken;
 };
 
 const User = model('users', userSchema);

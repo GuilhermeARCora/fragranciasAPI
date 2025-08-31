@@ -28,18 +28,12 @@ app.use(cors({
   credentials: true
 }));
 
-if (process.env.NODE_ENV === 'production') {
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
-  });
-}
-
 // Enable detailed request logging in development
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
 
-//Limits reqs from same API
+//Limits reqs from same IP
 const limiter = rateLimit({
   max: 100,
   windowMs: 60* 60 * 1000,
@@ -59,7 +53,7 @@ app.use(xss());
 
 //Prevent parameter pollution, does not allow duplicate params in querys, but its possible to whitelist spcific ones.
 app.use(hpp({ 
-  whitelist: ['price']
+  // whitelist: ['']
 }));
 
 app.use(cookieParser());

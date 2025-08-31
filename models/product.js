@@ -3,23 +3,18 @@ const {Schema, model} = require('mongoose');
 const productSchema = new Schema({
         name:{
             type:String,
-            required: [true, 'Name is required'],
+            required: [true, 'Nome é obrigatório'],
             trim:true,
             unique:true
         },
-        price: {
-          type: String,
-          required:[true, 'Price is required']
+        fullPrice: {
+          type: Number,
+          required:[true, 'Preco é obrigatorio']
         },
         description: {
           type: String,
           trim:true,
           required:[true, 'Description is required']
-        },
-        secretProduct: {
-            type: Boolean,
-            default: false,
-            select:false
         },
         imageUrl:{
           type: String,
@@ -30,7 +25,15 @@ const productSchema = new Schema({
           type:String,
           require:[true, 'Categories is required'],
           enum:['aromatizadores', 'autoCuidado', 'CasaEBemEstar', 'novidades']
-        }]
+        }],
+        active:{
+            type: Boolean,
+            default: true
+        },
+        isInPromo:{
+          type: Boolean,
+          default: false
+        }
 },{ 
   strict: true, 
   timestamps: true
@@ -42,6 +45,8 @@ productSchema.set('toJSON', {
     return ret;
   }
 });
+
+//utilizar recursos do mongoose para criar pixPrice e currentPrice
 
 const Product = model('products', productSchema);
 
