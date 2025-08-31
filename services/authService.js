@@ -1,8 +1,6 @@
 const authDao = require('../daos/authDao');
 const jwt = require('jsonwebtoken');
 const AppError = require('.././utils/appError');
-const Email = require('../utils/email');
-const crypto = require('crypto');
 const filterFields = require('../utils/filterFields');
 const User = require('../models/user');
 
@@ -41,9 +39,6 @@ const signup = async (reqBody, res,req) => {
 
     const token = generateToken(createdUser._id, res);
 
-    // const url = `${req.protocol}://${req.get('host')}/me`;
-    await new Email(createdUser).sendWelcome();
-
     return {
         user: createdUser,
         token
@@ -63,7 +58,7 @@ const login = async (reqBody, res) => {
     const user = await authDao.login(email);
 
     if(!user || !(await user.correctPassword(password, user.password))){
-        throw new AppError('Incorrect email or password', 401);
+        throw new AppError('Email ou senha inválidos', 401);
     };
 
     const token = generateToken(user._id, res);
@@ -76,87 +71,8 @@ const logout = async () => {
     //not needed for now
 };
 
-const forgotPassword = async (req) => {
-
-    const email = req.body.email;
-    const user = await authDao.forgotPassword(email);
-
-    if(!user){
-        throw new AppError('There is no user with this email address.', 404);
-    };
-
-    const resetToken = user.createPasswordResetToken();
-    await user.save({ validateBeforeSave: false });
-
-    const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`
-
-    const message = `Forgot your password? Submit a patch request with your new password and passwordConfirm to: ${resetURL}\n
-    If you didn't forget your password, ignore this email!`
-
-    // const emailSent = await sendEmail({
-    //     email: user.email,
-    //     subject:'Your reset token (Valid for 10 min)',
-    //     message
-    // });
-
-    try{
-
-    //    return emailSent;
-
-    }catch(err){
-
-        user.passwordResetToken = undefined;
-        user.passwordResetExpires = undefined;
-        await user.save({ validateBeforeSave: false });
-        throw new AppError('There was an error sending the email, try again later!', 500);
-    };
-
-};
-
-const resetPassword = async (req, res) => {
-
-    const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
-
-    const user = await authDao.resetPassword(hashedToken);
-
-    if(!user){
-        throw new AppError('Token is invalid or has expired', 400);
-    };
-
-    user.password = req.body.password;
-    user.confirmPassword = req.body.confirmPassword;
-    user.passwordResetExpires = undefined;
-    user.passwordResetToken = undefined;
-    await user.save();
-
-    const token = generateToken(user._id, res);
-
-    return token;
-};
-
-const updatePassword = async (req, res) => {
-
-    const user = await authDao.updatePassword(req.user.id);
-
-    if(!(await user.correctPassword(req.body.passwordCurrent, user.password))){
-        throw new AppError('Your current password is wrong!', 401);
-    };
-
-    user.password = req.body.password;
-    user.confirmPassword = req.body.confirmPassword;
-    await user.save();
-
-    const token = generateToken(user._id, res);
-
-    return token;
-
-};
-
 module.exports = {
     signup,
     login,
-    logout,
-    forgotPassword,
-    resetPassword,
-    updatePassword
-}
+    logout
+};

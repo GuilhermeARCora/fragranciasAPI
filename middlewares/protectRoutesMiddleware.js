@@ -16,7 +16,7 @@ const protect = catchAsync(async (req,res,next) => {
     };
 
     if(!token || token === ''){
-        throw new AppError('You are not logged in! Please log in to get access.', 401);
+        throw new AppError('Você não está autenticado! Por favor acesse sua conta.', 401);
     };
 
     // 2) Verification token
@@ -28,12 +28,12 @@ const protect = catchAsync(async (req,res,next) => {
     // 3) Check if user still exists
     const currentUser = await User.findById(decoded._id);
     if(!currentUser){
-        throw new AppError('The user belonging to this token does no longer exist', 401);
+        throw new AppError('O usuário que pertence a este token não existe mais', 401);
     };
 
     // 4) Check if user changed password after the token was issued
     if(currentUser.changedPasswordAfter(decoded.iat)){
-        throw new AppError('User recently changed password! Please log in again.', 401);
+        throw new AppError('Usuário mudou a senha recentemnte. Por favor acesse sua conta novamente', 401);
     };
 
     // Attach the authenticated user to the request object for access in later middlewares/controllers

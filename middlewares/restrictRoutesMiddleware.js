@@ -7,9 +7,9 @@ const {promisify} = require('util');
 //for this middleware work properly it has to come after the protect, that will store the user role in the req.user
 const restrictTo = (...roles) => {
     return (req,res,next) => {
-        //roles ['admin', 'master']; role='user' --> should not acess
+        //roles ['admin']; role='user' --> should not acess
         if(!roles.includes(req.user.role)){
-            throw new AppError('You do not have permission to perform this action', 403);
+            throw new AppError('Você não possui permissão para executar essa tarefa!', 403);
         };
 
         next();

@@ -10,7 +10,7 @@ const signup = catchAsync(async (req,res,next) => {
 
     delete filteredUser.__v
 
-    sendResponse(res, 201, "sucess",{
+    sendResponse(res, 201, "Cadastrado com sucesso",{
         token,
         data: {filteredUser}
     });
@@ -21,7 +21,7 @@ const login = catchAsync(async (req,res,next) => {
 
     const token = await authService.login(req.body, res);
 
-    sendResponse(res,200,"success", {token});
+    sendResponse(res,200,"Conectado com sucesso", {token});
 
 });
 
@@ -32,42 +32,28 @@ const logout = (req,res,next) => {
         expires: new Date(Date.now() + 10 * 1000), // expires in 10s
         httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
-        sameSite: 'Strict'
+        sameSite: process.env.NODE_ENV === 'production' ? "Strict" : "Lax"
     });
 
-    sendResponse(res,200,'Logged out successfully');
+    sendResponse(res,200,'Desconectado com sucesso!');
 
 };
 
-const forgotPassword = catchAsync(async (req,res,next) => {
+const getMe = (req, res) => {
+  
+  const user = req.user.toObject();
 
-   const emailSent = await authService.forgotPassword(req);
+  delete user.__v;
 
-    sendResponse(res,200,'Token sent to email');
-
-});
-
-const resetPassword = catchAsync(async (req,res,next) => {
-
-    const token = await authService.resetPassword(req, res);
-
-    sendResponse(res,200,"success",{token});
-
-});
-
-const updatePassword = catchAsync(async (req,res,next) => {
-
-    const token = await authService.updatePassword(req, res);
-
-    sendResponse(res,200,"success",{token});
-
-});
+  sendResponse(res, 200, "sucess",{
+      data: {user}
+  });    
+  
+};
 
 module.exports = {
     signup,
     login,
     logout,
-    forgotPassword,
-    resetPassword,
-    updatePassword
+    getMe
 };
