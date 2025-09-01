@@ -7,6 +7,9 @@ const imageUpload = require('../middlewares/uploadImageMiddleware');
 
 
 router.route('/').get(productController.getAllProducts);
+router.route('/novidades').get(productController.getNovidades);
+router.route('/searchAutoComplete').get(productController.searchAutoComplete);
+router.route('/productsByCategory').get(productController.getProductsByCategory);
 router.route('/:id').get(productController.getOneProduct);
 
 router.use(protectRoutesMiddleware.protect);
