@@ -22,11 +22,45 @@ const getAllProducts = catchAsync(async(req,res,next) => {
 
 });
 
+const getProductsByCategory = catchAsync(async(req,res,next) => {
+  const { category, limit = 10, page = 1 } = req.query;
+
+  const products = await productService.getProductsByCategory(category, Number(limit), Number(page));
+
+  sendResponse(res,200,"success",{
+      products, 
+      amount: products.length
+    });
+
+});
+
 const getOneProduct = catchAsync(async(req,res,next) => {
 
   const product = await productService.getOneProduct(req.params.id);
 
   sendResponse(res,200,"success",{product});
+
+});
+
+const getNovidades = catchAsync(async(req,res,next) => {
+
+  const products = await productService.getNovidades();
+
+  sendResponse(res,200,"success",{
+      products, 
+      amount: products.length
+    });
+
+});
+
+const searchAutoComplete = catchAsync(async(req,res,next) => {
+
+  const products = await productService.searchAutoComplete(req.query.q);
+
+  sendResponse(res,200,"success",{
+      products, 
+      amount: products.length
+    });
 
 });
 
@@ -51,5 +85,8 @@ module.exports = {
   getAllProducts,
   getOneProduct,
   editOneProduct,
-  deleteOneProduct
+  deleteOneProduct,
+  getNovidades,
+  searchAutoComplete,
+  getProductsByCategory
 };
