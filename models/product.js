@@ -1,52 +1,75 @@
-const {Schema, model} = require('mongoose');
+const { Schema, model } = require('mongoose');
 
 const productSchema = new Schema({
-        name:{
-            type:String,
-            required: [true, 'Nome é obrigatório'],
-            trim:true,
-            unique:true
-        },
-        fullPrice: {
-          type: Number,
-          required:[true, 'Preco é obrigatorio']
-        },
-        description: {
-          type: String,
-          trim:true,
-          required:[true, 'Description is required']
-        },
-        imageUrl:{
-          type: String,
-          trim:true,
-          required: [true, 'ImageURL is required']
-        },
-        categories:[{
-          type:String,
-          require:[true, 'Categories is required'],
-          enum:['aromatizadores', 'autoCuidado', 'CasaEBemEstar', 'novidades']
-        }],
-        active:{
-            type: Boolean,
-            default: true
-        },
-        isInPromo:{
-          type: Boolean,
-          default: false
-        }
-},{ 
-  strict: true, 
-  timestamps: true
+  name: {
+    type: String,
+    required: [true, 'Nome é obrigatório'],
+    trim: true,
+    unique: true
+  },
+  fullPrice: {
+    type: Number,
+    required: [true, 'Preco é obrigatório']
+  },
+  description: {
+    type: String,
+    trim: true,
+    required: [true, 'Descricão é obrigatório']
+  },
+  imageUrl: {
+    type: String,
+    trim: true,
+    required: [true, 'Imagem é obrigatório'],
+    unique: true
+  },
+  categories: [{
+    type: String,
+    required: [true, 'Categorias é obrigatório'],
+    enum: ['aromatizadores', 'autoCuidado', 'casaEBemEstar']
+  }],
+  active: {
+    type: Boolean,
+    default: true
+  },
+  isInPromo: {
+    type: Number, 
+    default: 0
+  }
+}, {
+  strict: true,
+  timestamps: true,
+  toJSON: { virtuals: true },
+  toObject: { virtuals: true }
 });
 
-productSchema.set('toJSON', {
-  transform(doc, ret) {
+productSchema.virtual('currentPrice').get(function () {
+  if (this.isInPromo && this.isInPromo > 0) {
+    const discount = this.isInPromo / 100;
+    return this.fullPrice * (1 - discount);
+  }
+  return this.fullPrice;
+});
+
+productSchema.virtual('pixPrice').get(function () {
+  const discount = 5 / 100;
+  return this.currentPrice * (1 - discount);
+});
+
+productSchema.set('toObject', {
+  virtuals: true,
+  transform: (doc, ret) => {
     delete ret.__v;
     return ret;
   }
 });
 
-//utilizar recursos do mongoose para criar pixPrice e currentPrice
+productSchema.set('toJSON', {
+  virtuals: true,
+  transform: (doc, ret) => {
+    delete ret.__v;
+    return ret;
+  }
+});
 
 const Product = model('products', productSchema);
 

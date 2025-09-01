@@ -1,12 +1,22 @@
-const {ServerApiVersion } = require('mongodb');
+const { ServerApiVersion } = require('mongodb');
 const mongoose = require('mongoose');
 
 const DB = process.env.DATABASE.replace('<PASSWORD>', process.env.DATABASE_PASSWORD);
 
-module.exports = mongoose.connect(DB, {
-    serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
+const connectDB = async () => {
+  try {
+    await mongoose.connect(DB, {
+      serverApi: {
+        version: ServerApiVersion.v1,
+        strict: false,             
+        deprecationErrors: true,
+      }
+    });
+    console.log('✅ DB connection successful!');
+  } catch (err) {
+    console.error('❌ DB connection error:', err);
+    process.exit(1); 
   }
-}).then(console.log('DB connection sucessful!'));
+};
+
+module.exports = connectDB;
