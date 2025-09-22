@@ -16,14 +16,14 @@ router.use(protectRoutesMiddleware.protect);
 router.use(restrictRouteMiddleware.restrictTo('admin'));
 
 // bucket = "products-images, folder = "products/", fieldName = "image" "
-router.route('/')
-    .post(...imageUpload('products-images', { folder: 'products/', fieldName: 'image' }),
-        productController.createOneProduct
-    );
+const uploadImage = imageUpload('products-images', { folder: 'products/', fieldName: 'image' });
+
+router.post('/', uploadImage, productController.createOneProduct);
+
+router.route('/changeStatus/:id').patch(productController.changeStatus);
+
 router.route('/:id')
-    .patch(...imageUpload('products-images', { folder: 'products/', fieldName: 'image'}),
-        productController.editOneProduct
-    )
+    .patch(uploadImage ,productController.editOneProduct)
     .delete(productController.deleteOneProduct);
 
 module.exports = router;

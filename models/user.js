@@ -33,8 +33,7 @@ const userSchema = new Schema({
     passwordChangedAt: Date,
     active:{
       type: Boolean,
-      default: true,
-      select: false
+      default: true
     }
 }, { strict: true });
 

@@ -77,6 +77,16 @@ const editOneProduct = async({id, ...updates}) =>{
   return product.toObject();
 };
 
+const changeStatus = async({id, ...updates}) =>{
+
+  const product = await Product.findByIdAndUpdate(id, updates, {
+        new: true,
+        runValidators: true
+    });
+
+  return product.toObject();
+};
+
 const deleteOneProduct = async(id) =>{
 
   const deleted = await Product.findByIdAndDelete(id);
@@ -92,5 +102,6 @@ module.exports = {
   deleteOneProduct,
   getNovidades,
   searchAutoComplete,
-  getProductsByCategory
+  getProductsByCategory,
+  changeStatus
 };

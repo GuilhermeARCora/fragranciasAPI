@@ -4,7 +4,12 @@ const productService = require('../services/productService');
 
 const createOneProduct = catchAsync(async(req,res,next) => {
 
-  const payload = { ...req.body, imageUrl: req.fileUrl };
+  if (!req.fileUrl) {
+    return next(new AppError('A imagem é obrigatória', 400));
+  };
+
+  const payload = { ...req.body };
+  payload.image = req.fileUrl;
   const product = await productService.createOneProduct(payload);
 
   sendResponse(res, 201, "success", {product});
@@ -66,15 +71,29 @@ const searchAutoComplete = catchAsync(async(req,res,next) => {
 
 const editOneProduct = catchAsync(async(req,res,next) => {
 
-  const product = await productService.editOneProduct(req.params.id, req.body);
+  const payload = { ...req.body };
+
+  if (req.fileUrl) {
+    payload.image = req.fileUrl; // só atualiza se realmente veio arquivo novo
+  };
+
+  const product = await productService.editOneProduct(req.params.id, payload);
 
   sendResponse(res,200,"success",{product});
 
 });
 
+const changeStatus = catchAsync(async(req,res,next) => {
+
+  const product = await productService.changeStatus(req.params.id, req.body);
+
+  sendResponse(res,204,"success",{product});
+
+});
+
 const deleteOneProduct = catchAsync(async(req,res,next) => {
 
-  const deleted = await productService.deleteOneProduct(req.params.id);
+  await productService.deleteOneProduct(req.params.id);
 
   sendResponse(res,204,"success");
 
@@ -88,5 +107,6 @@ module.exports = {
   deleteOneProduct,
   getNovidades,
   searchAutoComplete,
-  getProductsByCategory
+  getProductsByCategory,
+  changeStatus
 };

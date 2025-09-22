@@ -16,35 +16,40 @@ const productSchema = new Schema({
     trim: true,
     required: [true, 'Descricão é obrigatório']
   },
-  imageUrl: {
+  image: {
     type: String,
     trim: true,
     required: [true, 'Imagem é obrigatório'],
     unique: true
   },
-  categories: [{
-    type: String,
+  categories: {
+    type: [String],
     required: [true, 'Categorias é obrigatório'],
     enum: ['aromatizadores', 'autoCuidado', 'casaEBemEstar']
-  }],
+  },
   active: {
     type: Boolean,
     default: true
   },
-  isInPromo: {
+  promoPercentage: {
     type: Number, 
     default: 0
+  },
+  cod:{
+    type: String,
+    required:[true, 'Codigo é obrigatório']
   }
 }, {
   strict: true,
   timestamps: true,
   toJSON: { virtuals: true },
-  toObject: { virtuals: true }
+  toObject: { virtuals: true },
+  id: false
 });
 
 productSchema.virtual('currentPrice').get(function () {
-  if (this.isInPromo && this.isInPromo > 0) {
-    const discount = this.isInPromo / 100;
+  if (this.promoPercentage && this.promoPercentage > 0) {
+    const discount = this.promoPercentage / 100;
     return this.fullPrice * (1 - discount);
   }
   return this.fullPrice;

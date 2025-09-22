@@ -22,6 +22,7 @@ const upload = multer({ storage: multer.memoryStorage() });
  *  - opts.width, opts.quality: sharp options
  */
 function imageUpload(bucket, opts = {}) {
+  
   const {
     folder    = '',
     fieldName = 'image',
@@ -36,9 +37,16 @@ function imageUpload(bucket, opts = {}) {
     // Step B: transform + upload
     catchAsync(async (req, res, next) => {
 
+       // 👉 Se não tem arquivo
       if (!req.file) {
-        return next(new AppError('No file provided', 400));
-      }
+        // Se for criação (POST) exige imagem
+        if (req.method === 'POST') {
+          return next(new AppError('A imagem é obrigatória', 400));
+        };
+
+        // Se for update (PATCH/PUT), só segue sem alterar imagem
+        return next();
+      };
 
         // 1. convert to WebP + resize
         const webpBuffer = await sharp(req.file.buffer)
