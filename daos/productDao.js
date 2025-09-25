@@ -7,11 +7,50 @@ const createOneProduct = async(data) =>{
   return product.toObject();
 };
 
-const getAllProducts = async() =>{
+const getAllProducts = async (reqQuery) => {
+  const filters = {};
 
-  const products = await Product.find();
+  if (reqQuery.cod) filters.cod = Number(reqQuery.cod);
+  
 
-  return products.map(p => p.toObject());
+  if (reqQuery.promoPercentage) filters.promoPercentage = Number(reqQuery.promoPercentage);
+  
+
+  if (reqQuery.fullPrice) filters.fullPrice = Number(reqQuery.fullPrice);
+  
+
+  if (reqQuery.active !== undefined) filters.active = reqQuery.active === "true";
+  
+
+  if (reqQuery.categories) filters.categories = { $in: reqQuery.categories.split(",") };
+  
+  // 🔹 Se tiver name, usa Atlas Search
+  if (reqQuery.name) {
+    const pipeline = [
+      {
+        $search: {
+          index: "productSearch",
+          compound: {
+            should: [
+              {
+                autocomplete: {
+                  query: reqQuery.name,
+                  path: "name",
+                },
+              }
+            ],
+          },
+        },
+      },
+      { $match: filters }, // aplica os outros filtros num passo separado
+    ];
+
+    return await Product.aggregate(pipeline);
+  }
+
+  // 🔹 Caso contrário, busca normal
+  const products = await Product.find(filters);
+  return products.map((p) => p.toObject());
 };
 
 const getProductsByCategory = async(category, limit, page) =>{

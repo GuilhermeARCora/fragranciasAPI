@@ -11,9 +11,9 @@ const createOneProduct = async(reqBody) =>{
   return createdProduct;
 };
 
-const getAllProducts = async() =>{
+const getAllProducts = async(reqQuery) =>{
 
-  const products = await productDao.getAllProducts();
+  const products = await productDao.getAllProducts(reqQuery);
 
   return products;
 };

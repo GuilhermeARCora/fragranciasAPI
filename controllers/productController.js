@@ -18,7 +18,7 @@ const createOneProduct = catchAsync(async(req,res,next) => {
 
 const getAllProducts = catchAsync(async(req,res,next) => {
 
-  const products = await productService.getAllProducts();
+  const products = await productService.getAllProducts(req.query);
 
   sendResponse(res,200,"success",{
       products, 
@@ -87,7 +87,7 @@ const changeStatus = catchAsync(async(req,res,next) => {
 
   const product = await productService.changeStatus(req.params.id, req.body);
 
-  sendResponse(res,204,"success",{product});
+  sendResponse(res,200,"success",{product});
 
 });
 
