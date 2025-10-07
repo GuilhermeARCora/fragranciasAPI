@@ -4,11 +4,18 @@ const productController = require('../controllers/productController');
 const protectRoutesMiddleware = require('../middlewares/protectRoutesMiddleware');
 const restrictRouteMiddleware = require('../middlewares/restrictRoutesMiddleware');
 const imageUpload = require('../middlewares/uploadImageMiddleware');
+const rateLimit = require('express-rate-limit');
 
+const searchLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 min
+  max: 500,
+  message: 'Too many search requests, please slow down.'
+});
 
 router.route('/').get(productController.getAllProducts);
 router.route('/novidades').get(productController.getNovidades);
-router.route('/searchAutoComplete').get(productController.searchAutoComplete);
+//Autocomplete search (rate limited)
+router.route('/searchAutoComplete').get(searchLimiter, productController.searchAutoComplete);
 router.route('/productsByCategory').get(productController.getProductsByCategory);
 router.route('/:id').get(productController.getOneProduct);
 
