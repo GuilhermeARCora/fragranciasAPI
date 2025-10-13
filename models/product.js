@@ -41,6 +41,7 @@ const productSchema = new Schema({
   }
 }, {
   strict: true,
+  collection: "products",
   timestamps: true,
   toJSON: { virtuals: true },
   toObject: { virtuals: true },

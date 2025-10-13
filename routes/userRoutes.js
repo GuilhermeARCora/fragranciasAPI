@@ -10,7 +10,7 @@ router.post('/login', authController.login);
 //user logged in
 router.use(protectRoutesMiddleware.protect);
 
-router.get('/me', authController.getMe);
+router.get('/me', authController.me);
 router.delete('/logout', authController.logout);
 
 module.exports = router;

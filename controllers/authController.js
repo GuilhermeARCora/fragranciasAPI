@@ -12,17 +12,15 @@ const signup = catchAsync(async (req,res,next) => {
 
     sendResponse(res, 201, "Cadastrado com sucesso",{
         token,
-        data: {filteredUser}
+        filteredUser
     });
-
 });
 
 const login = catchAsync(async (req,res,next) => {
 
     const token = await authService.login(req.body, res);
 
-    sendResponse(res,200,"Conectado com sucesso", {token});
-
+    sendResponse(res,200,"Conectado com sucesso", token);
 });
 
 const logout = (req,res,next) => {
@@ -35,25 +33,21 @@ const logout = (req,res,next) => {
         sameSite: process.env.NODE_ENV === 'production' ? "Strict" : "Lax"
     });
 
-    sendResponse(res,200,'Desconectado com sucesso!');
-
+    sendResponse(res,200,'Desconectado com sucesso!',{});
 };
 
-const getMe = (req, res) => {
+const me = (req, res) => {
   
   const user = req.user.toObject();
 
   delete user.__v;
 
-  sendResponse(res, 200, "sucess",{
-      data: {user}
-  });    
-  
+  sendResponse(res, 200, "sucess", user);    
 };
 
 module.exports = {
     signup,
     login,
     logout,
-    getMe
+    me
 };

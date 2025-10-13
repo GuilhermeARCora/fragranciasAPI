@@ -7,7 +7,6 @@ const xss = require('xss-clean');
 const mongoSanitize = require('express-mongo-sanitize');
 const hpp = require('hpp');
 const cors = require('cors');
-const path = require('path');
 const cookieParser = require('cookie-parser');
 
 const app = express();

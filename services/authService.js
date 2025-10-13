@@ -64,15 +64,9 @@ const login = async (reqBody, res) => {
     const token = generateToken(user._id, res);
 
     return token;
-
-};
-
-const logout = async () => {
-    //not needed for now
 };
 
 module.exports = {
     signup,
-    login,
-    logout
+    login
 };
