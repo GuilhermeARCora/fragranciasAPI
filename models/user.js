@@ -1,6 +1,5 @@
 const { Schema, model } = require('mongoose');
 const bcrypt = require('bcrypt');
-const crypto = require('crypto');
 
 const userSchema = new Schema({
     
@@ -35,7 +34,11 @@ const userSchema = new Schema({
       type: Boolean,
       default: true
     }
-}, { strict: true });
+}, {  
+  strict: true,
+  collection: "users",
+  timestamps: true, 
+});
 
 //VIRTUAL PROPERTIES
 userSchema.virtual('confirmPassword').set(function (value) {

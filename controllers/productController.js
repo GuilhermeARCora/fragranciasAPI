@@ -2,7 +2,7 @@ const catchAsync = require("../utils/catchAsync");
 const sendResponse = require('../utils/sendResponse');
 const productService = require('../services/productService');
 
-const createOneProduct = catchAsync(async(req,res,next) => {
+const create = catchAsync(async(req,res,next) => {
 
   if (!req.fileUrl) {
     return next(new AppError('A imagem é obrigatória', 400));
@@ -10,15 +10,15 @@ const createOneProduct = catchAsync(async(req,res,next) => {
 
   const payload = { ...req.body };
   payload.image = req.fileUrl;
-  const product = await productService.createOneProduct(payload);
+  const product = await productService.create(payload);
 
-  sendResponse(res, 201, "success", {product});
+  sendResponse(res, 201, "success", product);
 
 });
 
-const getAllProducts = catchAsync(async(req,res,next) => {
+const findAll = catchAsync(async(req,res,next) => {
 
-  const products = await productService.getAllProducts(req.query);
+  const products = await productService.findAll(req.query);
 
   sendResponse(res,200,"success",{
       products, 
@@ -27,10 +27,10 @@ const getAllProducts = catchAsync(async(req,res,next) => {
 
 });
 
-const getProductsByCategory = catchAsync(async(req,res,next) => {
-  const { category, limit = 10, page = 1 } = req.query;
+const findByCategory = catchAsync(async(req,res,next) => {
+  const { limit = 10, page = 1 } = req.query;
 
-  const products = await productService.getProductsByCategory(category, Number(limit), Number(page));
+  const products = await productService.findByCategory(req.params.category, Number(limit), Number(page), res);
 
   sendResponse(res,200,"success",{
       products, 
@@ -39,17 +39,16 @@ const getProductsByCategory = catchAsync(async(req,res,next) => {
 
 });
 
-const getOneProduct = catchAsync(async(req,res,next) => {
+const findOne = catchAsync(async(req,res,next) => {
 
-  const product = await productService.getOneProduct(req.params.id);
+  const product = await productService.findOne(req.params.id);
 
-  sendResponse(res,200,"success",{product});
-
+  sendResponse(res,200,"success",product);
 });
 
-const getNovidades = catchAsync(async(req,res,next) => {
+const newProducts = catchAsync(async(req,res,next) => {
 
-  const products = await productService.getNovidades();
+  const products = await productService.newProducts();
 
   sendResponse(res,200,"success",{
       products, 
@@ -69,7 +68,7 @@ const searchAutoComplete = catchAsync(async(req,res,next) => {
 
 });
 
-const editOneProduct = catchAsync(async(req,res,next) => {
+const update = catchAsync(async(req,res,next) => {
 
   const payload = { ...req.body };
 
@@ -77,9 +76,9 @@ const editOneProduct = catchAsync(async(req,res,next) => {
     payload.image = req.fileUrl; // só atualiza se realmente veio arquivo novo
   };
 
-  const product = await productService.editOneProduct(req.params.id, payload);
+  const product = await productService.update(req.params.id, payload);
 
-  sendResponse(res,200,"success",{product});
+  sendResponse(res,200,"success",product);
 
 });
 
@@ -87,26 +86,26 @@ const changeStatus = catchAsync(async(req,res,next) => {
 
   const product = await productService.changeStatus(req.params.id, req.body);
 
-  sendResponse(res,200,"success",{product});
+  sendResponse(res,200,"success",product);
 
 });
 
-const deleteOneProduct = catchAsync(async(req,res,next) => {
+const remove = catchAsync(async(req,res,next) => {
 
-  await productService.deleteOneProduct(req.params.id);
+  await productService.remove(req.params.id);
 
-  sendResponse(res,204,"success");
+  sendResponse(res,204,"success", {});
 
 });
 
 module.exports = {
-  createOneProduct,
-  getAllProducts,
-  getOneProduct,
-  editOneProduct,
-  deleteOneProduct,
-  getNovidades,
+  create,
+  findAll,
+  findOne,
+  newProducts,
+  update,
+  remove,
   searchAutoComplete,
-  getProductsByCategory,
+  findByCategory,
   changeStatus
 };

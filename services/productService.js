@@ -2,36 +2,45 @@ const productDao = require('../daos/productDao');
 const AppError = require('../utils/appError');
 const filterFields = require('../utils/filterFields');
 
-const createOneProduct = async(reqBody) =>{
+const create = async(reqBody) =>{
 
   const safeData = filterFields(reqBody, 'name', 'fullPrice', 'description', 'image', 'categories', 'active', 'promoPercentage', 'cod');
 
-  const createdProduct = await productDao.createOneProduct(safeData);
+  const createdProduct = await productDao.create(safeData);
 
   return createdProduct;
 };
 
-const getAllProducts = async(reqQuery) =>{
+const findAll = async(reqQuery) =>{
 
-  const products = await productDao.getAllProducts(reqQuery);
+  const products = await productDao.findAll(reqQuery);
 
   return products;
 };
 
-const getProductsByCategory = async (category, limit = 10, page = 1) => {
+const findByCategory = async (category, limit = 10, page = 1, res) => {
   if (!category) throw new AppError("Categoria é obrigatório", 400);
 
   const validCategories = ['aromatizadores', 'autoCuidado', 'casaEBemEstar'];
-  if (!validCategories.includes(category)) {
-    throw new AppError("Categoria inválida", 400);
-  };
+  if (!validCategories.includes(category))throw new AppError("Categoria inválida", 400);
 
-  return productDao.getProductsByCategory(category, limit, page);
+  const products = await productDao.findByCategory(category, limit, page);
+
+  if(products.length === 0) return res.status(200).json({
+    status: 200,
+    message: "Todos os produtos dessa categoria já foram retornados",
+    data: {
+      products: [],
+      amount: 0
+    }
+  });
+
+  return products;
 };
 
-const getOneProduct = async(id) =>{
+const findOne = async(id) =>{
 
-  const product = await productDao.getOneProduct(id);
+  const product = await productDao.findOne(id);
   
   if(!product){
     throw new AppError("O Id deste produto não existe!", 404)
@@ -40,9 +49,9 @@ const getOneProduct = async(id) =>{
   return product;
 };
 
-const getNovidades = async() =>{
+const newProducts = async() =>{
 
-  const products = await productDao.getNovidades();
+  const products = await productDao.newProducts();
   
   return products;
 };
@@ -58,13 +67,13 @@ const searchAutoComplete = async(reqQuery) =>{
   return products;
 };
 
-const editOneProduct = async(reqParamsId, reqBody) =>{
+const update = async(reqParamsId, reqBody) =>{
 
   const id = reqParamsId;
 
   const safeData = filterFields(reqBody, 'name', 'fullPrice', 'description', 'image', 'categories', 'active', 'promoPercentage', 'cod');
 
-  const product = await productDao.editOneProduct({id, ...safeData});
+  const product = await productDao.update({id, ...safeData});
   
   if(!product){
     throw new AppError("O Id deste produto não existe!", 404)
@@ -88,9 +97,9 @@ const changeStatus = async(reqParamsId, reqBody) =>{
   return product;
 };
 
-const deleteOneProduct = async(id) =>{
+const remove = async(id) =>{
 
-  const deleted = await productDao.deleteOneProduct(id);
+  const deleted = await productDao.remove(id);
   
   if(!deleted){
     throw new AppError("O Id deste produto não existe!", 404)
@@ -100,13 +109,13 @@ const deleteOneProduct = async(id) =>{
 };
 
 module.exports = {
-  createOneProduct,
-  getAllProducts,
-  getOneProduct,
-  editOneProduct,
-  deleteOneProduct,
-  getNovidades,
+  create,
+  findAll,
+  findOne,
+  newProducts,
+  update,
+  remove,
   searchAutoComplete,
-  getProductsByCategory,
+  findByCategory,
   changeStatus
 };
