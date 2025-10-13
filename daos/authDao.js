@@ -6,14 +6,9 @@ const signup = async (user) => {
 
 const login = async (email) => {
     return await User.findOne({  email  }).select('+password');
-}
-
-const logout = async() => {
-    //not needed for now
 };
 
 module.exports = {
     signup,
-    login,
-    logout
+    login
 };

@@ -1,13 +1,13 @@
 const Product = require('../models/product');
 
-const createOneProduct = async(data) =>{
+const create = async(data) =>{
 
   const product = await Product.create(data);
 
   return product.toObject();
 };
 
-const getAllProducts = async (reqQuery) => {
+const findAll = async (reqQuery) => {
   const filters = {};
 
   if (reqQuery.cod) filters.cod = Number(reqQuery.cod);
@@ -46,14 +46,14 @@ const getAllProducts = async (reqQuery) => {
     ];
 
     return await Product.aggregate(pipeline);
-  }
+  };
 
   // 🔹 Caso contrário, busca normal
   const products = await Product.find(filters);
   return products.map((p) => p.toObject());
 };
 
-const getProductsByCategory = async(category, limit, page) =>{
+const findByCategory = async(category, limit, page) =>{
 
   const skip = (page - 1) * limit;
   const products = await Product.find({ categories: category })
@@ -63,14 +63,14 @@ const getProductsByCategory = async(category, limit, page) =>{
   return products.map(p => p.toObject());
 };
 
-const getOneProduct = async(id) =>{
+const findOne = async(id) =>{
 
   const product = await Product.findById(id);
 
   return product.toObject();
 };
 
-const getNovidades = async() =>{
+const newProducts = async() =>{
 
   const products = await Product.find().sort({ createdAt: -1 }).limit(10);
 
@@ -106,7 +106,7 @@ const searchAutoComplete = async(query) =>{
 
 };
 
-const editOneProduct = async({id, ...updates}) =>{
+const update = async({id, ...updates}) =>{
 
   const product = await Product.findByIdAndUpdate(id, updates, {
         new: true,
@@ -126,7 +126,7 @@ const changeStatus = async({id, ...updates}) =>{
   return product.toObject();
 };
 
-const deleteOneProduct = async(id) =>{
+const remove = async(id) =>{
 
   const deleted = await Product.findByIdAndDelete(id);
 
@@ -134,13 +134,13 @@ const deleteOneProduct = async(id) =>{
 };
 
 module.exports = {
-  createOneProduct,
-  getAllProducts,
-  getOneProduct,
-  editOneProduct,
-  deleteOneProduct,
-  getNovidades,
+  create,
+  findAll,
+  findOne,
+  newProducts,
+  update,
+  remove,
   searchAutoComplete,
-  getProductsByCategory,
+  findByCategory,
   changeStatus
 };
