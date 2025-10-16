@@ -13,8 +13,7 @@ const productSchema = new Schema({
   },
   description: {
     type: String,
-    trim: true,
-    required: [true, 'Descricão é obrigatório']
+    trim: true
   },
   image: {
     type: String,
@@ -37,14 +36,14 @@ const productSchema = new Schema({
   },
   cod:{
     type: String,
-    required:[true, 'Codigo é obrigatório']
+    required:[true, 'Codigo é obrigatório'],
+    unique: true
   }
 }, {
   strict: true,
   collection: "products",
   timestamps: true,
   toJSON: { virtuals: true },
-  toObject: { virtuals: true },
   id: false
 });
 
@@ -59,22 +58,6 @@ productSchema.virtual('currentPrice').get(function () {
 productSchema.virtual('pixPrice').get(function () {
   const discount = 5 / 100;
   return this.currentPrice * (1 - discount);
-});
-
-productSchema.set('toObject', {
-  virtuals: true,
-  transform: (doc, ret) => {
-    delete ret.__v;
-    return ret;
-  }
-});
-
-productSchema.set('toJSON', {
-  virtuals: true,
-  transform: (doc, ret) => {
-    delete ret.__v;
-    return ret;
-  }
 });
 
 const Product = model('products', productSchema);
