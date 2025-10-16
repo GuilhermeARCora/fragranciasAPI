@@ -5,7 +5,7 @@ const signup = async (user) => {
 };
 
 const login = async (email) => {
-    return await User.findOne({  email  }).select('+password');
+    return await User.findOne({  email  }).select('+password -createdAt -updatedAt -__v');
 };
 
 module.exports = {

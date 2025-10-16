@@ -30,7 +30,14 @@ const findAll = catchAsync(async(req,res,next) => {
 const findByCategory = catchAsync(async(req,res,next) => {
   const { limit = 10, page = 1 } = req.query;
 
-  const products = await productService.findByCategory(req.params.category, Number(limit), Number(page), res);
+  const products = await productService.findByCategory(req.params.category, Number(limit), Number(page));
+
+  if (products.length === 0) {
+    return sendResponse(res, 200, "Todos os produtos dessa categoria já foram retornados", {
+      products: [],
+      amount: 0,
+    });
+  };
 
   sendResponse(res,200,"success",{
       products, 
