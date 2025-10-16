@@ -6,13 +6,9 @@ const signup = catchAsync(async (req,res,next) => {
     
     const {user, token} = await authService.signup(req.body, res,req);
 
-    const filteredUser = user.toObject();
-
-    delete filteredUser.__v
-
     sendResponse(res, 201, "Cadastrado com sucesso",{
         token,
-        filteredUser
+        user
     });
 });
 
@@ -39,8 +35,6 @@ const logout = (req,res,next) => {
 const me = (req, res) => {
   
   const user = req.user.toObject();
-
-  delete user.__v;
 
   sendResponse(res, 200, "sucess", user);    
 };

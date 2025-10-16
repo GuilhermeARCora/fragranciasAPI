@@ -17,9 +17,7 @@ const apiRouter = require('../routes/index');
 // Set Security HTTP headers
 app.use(helmet());
 
-const allowedOrigin = process.env.NODE_ENV === 'production'
-  ? process.env.FRONTEND_URL
-  : process.env.FRONTEND_DEV_URL;
+const allowedOrigin = process.env.NODE_ENV === 'production' ? process.env.FRONTEND_URL : process.env.FRONTEND_DEV_URL;
 
 // Enable CORS with credentials support (for cross-origin cookies)
 app.use(cors({

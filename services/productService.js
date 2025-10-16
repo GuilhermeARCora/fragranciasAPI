@@ -18,22 +18,13 @@ const findAll = async(reqQuery) =>{
   return products;
 };
 
-const findByCategory = async (category, limit = 10, page = 1, res) => {
+const findByCategory = async (category, limit = 10, page = 1) => {
   if (!category) throw new AppError("Categoria é obrigatório", 400);
 
   const validCategories = ['aromatizadores', 'autoCuidado', 'casaEBemEstar'];
   if (!validCategories.includes(category))throw new AppError("Categoria inválida", 400);
 
   const products = await productDao.findByCategory(category, limit, page);
-
-  if(products.length === 0) return res.status(200).json({
-    status: 200,
-    message: "Todos os produtos dessa categoria já foram retornados",
-    data: {
-      products: [],
-      amount: 0
-    }
-  });
 
   return products;
 };
@@ -42,9 +33,7 @@ const findOne = async(id) =>{
 
   const product = await productDao.findOne(id);
   
-  if(!product){
-    throw new AppError("O Id deste produto não existe!", 404)
-  };
+  if(!product) throw new AppError("O Id deste produto não existe!", 404);
   
   return product;
 };
@@ -58,9 +47,7 @@ const newProducts = async() =>{
 
 const searchAutoComplete = async(reqQuery) =>{
 
-  if (!reqQuery || reqQuery.trim().length < 2) {
-    throw new AppError("A query de busca deve ter pelo menos 2 caracteres", 400);
-  };
+  if (!reqQuery || reqQuery.trim().length < 2) throw new AppError("A query de busca deve ter pelo menos 2 caracteres", 400);
 
   const products = await productDao.searchAutoComplete(reqQuery);
   
@@ -75,9 +62,7 @@ const update = async(reqParamsId, reqBody) =>{
 
   const product = await productDao.update({id, ...safeData});
   
-  if(!product){
-    throw new AppError("O Id deste produto não existe!", 404)
-  };
+  if(!product) throw new AppError("O Id deste produto não existe!", 404);
   
   return product;
 };
@@ -90,9 +75,7 @@ const changeStatus = async(reqParamsId, reqBody) =>{
 
   const product = await productDao.changeStatus({id, ...safeData});
   
-  if(!product){
-    throw new AppError("O Id deste produto não existe!", 404)
-  };
+  if(!product) throw new AppError("O Id deste produto não existe!", 404);
   
   return product;
 };
@@ -101,9 +84,7 @@ const remove = async(id) =>{
 
   const deleted = await productDao.remove(id);
   
-  if(!deleted){
-    throw new AppError("O Id deste produto não existe!", 404)
-  };
+  if(!deleted) throw new AppError("O Id deste produto não existe!", 404);
   
   return deleted;
 };

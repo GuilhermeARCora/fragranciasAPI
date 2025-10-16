@@ -2,79 +2,82 @@ const Product = require('../models/product');
 
 const create = async(data) =>{
 
-  const product = await Product.create(data);
-
-  return product.toObject();
+  const created = await Product.create(data);
+  const product = await Product.findById(created._id).select({ updatedAt: 0, createdAt: 0, __v: 0 });
+  
+  return product;
 };
 
 const findAll = async (reqQuery) => {
   const filters = {};
 
   if (reqQuery.cod) filters.cod = Number(reqQuery.cod);
-  
-
   if (reqQuery.promoPercentage) filters.promoPercentage = Number(reqQuery.promoPercentage);
-  
-
   if (reqQuery.fullPrice) filters.fullPrice = Number(reqQuery.fullPrice);
-  
+  if (reqQuery.active !== undefined) filters.active = reqQuery.active === 'true';
+  if (reqQuery.categories) filters.categories = { $in: reqQuery.categories.split(',') };
 
-  if (reqQuery.active !== undefined) filters.active = reqQuery.active === "true";
-  
+  let pipeline = [];
 
-  if (reqQuery.categories) filters.categories = { $in: reqQuery.categories.split(",") };
-  
-  // 🔹 Se tiver name, usa Atlas Search
   if (reqQuery.name) {
-    const pipeline = [
+    pipeline = [
       {
         $search: {
-          index: "productSearch",
+          index: 'productSearch',
           compound: {
             should: [
               {
                 autocomplete: {
                   query: reqQuery.name,
-                  path: "name",
+                  path: 'name',
                 },
-              }
+              },
             ],
           },
         },
       },
-      { $match: filters }, // aplica os outros filtros num passo separado
+      { $match: filters },
+      { $sort: { name: -1 } },
+      {
+        $project: {
+          updatedAt:0,
+          createdAt:0,
+          __v:0
+        }
+      }
     ];
 
-    return await Product.aggregate(pipeline);
-  };
+    return Product.aggregate(pipeline);
+  }
 
-  // 🔹 Caso contrário, busca normal
-  const products = await Product.find(filters);
-  return products.map((p) => p.toObject());
+  return Product.find(filters, {updatedAt:0, createdAt:0, __v:0});
 };
 
 const findByCategory = async(category, limit, page) =>{
 
   const skip = (page - 1) * limit;
-  const products = await Product.find({ categories: category })
+  const products = await Product.find({ categories: category, active: true }, {createdAt: 0, updatedAt:0, cod:0, active:0, description:0, categories:0, __v:0})
+    .sort({name: -1})
     .skip(skip)
     .limit(limit);
 
-  return products.map(p => p.toObject());
+  return products;
 };
 
 const findOne = async(id) =>{
 
-  const product = await Product.findById(id);
+  const product = await Product.findById(id, {updatedAt:0, createdAt:0, __v:0});
 
-  return product.toObject();
+  return product;
 };
 
 const newProducts = async() =>{
 
-  const products = await Product.find().sort({ createdAt: -1 }).limit(10);
+  const products = await Product.find({},{createdAt: 0, updatedAt:0, cod:0, active:0, description:0, categories:0, __v:0})
+    .sort({ createdAt: -1 })
+    .limit(10);
 
-  return products.map(p => p.toObject());
+  return products;
 };
 
 const searchAutoComplete = async(query) =>{
@@ -101,7 +104,15 @@ const searchAutoComplete = async(query) =>{
         }
       }
     },
-    { $limit: 10 }
+    { $limit: 10 },
+    { $sort: { name: -1 } },
+    {
+      $project: {
+        updatedAt:0,
+        createdAt:0,
+        __v:0
+      }
+    }
   ]);
 
 };
@@ -110,10 +121,11 @@ const update = async({id, ...updates}) =>{
 
   const product = await Product.findByIdAndUpdate(id, updates, {
         new: true,
-        runValidators: true
-    });
+        runValidators: true,
+    }
+  ).select({updatedAt:0, createdAt:0, __v:0});
 
-  return product.toObject();
+  return product;
 };
 
 const changeStatus = async({id, ...updates}) =>{
@@ -121,16 +133,17 @@ const changeStatus = async({id, ...updates}) =>{
   const product = await Product.findByIdAndUpdate(id, updates, {
         new: true,
         runValidators: true
-    });
+    }
+  ).select({updatedAt:0, createdAt:0, __v:0});
 
-  return product.toObject();
+  return product;
 };
 
 const remove = async(id) =>{
 
-  const deleted = await Product.findByIdAndDelete(id);
+  const deleted = await Product.findByIdAndDelete(id).select({updatedAt:0, createdAt:0, __v:0});
 
-  return deleted.toObject();
+  return deleted;
 };
 
 module.exports = {

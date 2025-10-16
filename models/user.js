@@ -38,6 +38,8 @@ const userSchema = new Schema({
   strict: true,
   collection: "users",
   timestamps: true, 
+  toJSON: { virtuals: true },
+  id: false
 });
 
 //VIRTUAL PROPERTIES
