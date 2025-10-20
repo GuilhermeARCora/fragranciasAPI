@@ -1,6 +1,10 @@
 const orderDao = require('../daos/orderDao');
 const AppError = require('../utils/appError');
 const filterFields = require('../utils/filterFields');
+const dayjs = require('dayjs');
+require('dayjs/locale/pt-br');
+
+dayjs.locale('pt-br'); 
 
 const create = async(reqBody) =>{
 
@@ -40,6 +44,7 @@ const update = async(reqParamsId, reqBody) =>{
 
   const order = await orderDao.findOne(id);
   if(order.status === 'CONCLUIDO') throw new AppError("O pedido já foi concluido!", 404);
+  if(order.status === 'CANCELADO') throw new AppError("O pedido já foi cancelado!", 404);
 
   const orderUpdated = await orderDao.update({id, ...safeData});
   
@@ -48,9 +53,64 @@ const update = async(reqParamsId, reqBody) =>{
   return orderUpdated;
 };
 
+const findStatistics = async() =>{
+
+  const orders = await orderDao.findStatistics();
+
+  const statistics = {
+    amountStatusPendente: 0,
+    amountStatusConcluido: 0,
+    amountStatusCancelado: 0,
+    amountInTheLastTwoDays: 0,
+    amountWithFinalPriceOverFiveHundred: 0,
+  };
+
+  const limitDate = dayjs().subtract(2, 'day');
+
+  for (const order of orders) {
+    if (order.status === 'PENDENTE') statistics.amountStatusPendente++;
+    else if (order.status === 'CONCLUIDO') statistics.amountStatusConcluido++;
+    else if (order.status === 'CANCELADO') statistics.amountStatusCancelado++;
+
+    if (dayjs(order.createdAt).isAfter(limitDate))
+      statistics.amountInTheLastTwoDays++;
+
+    if (order.totalCurrentPrice > 500)
+      statistics.amountWithFinalPriceOverFiveHundred++;
+  };
+
+  return statistics;
+};
+
+const findOrdersEvolution = async() =>{
+  const orders = await orderDao.findOrdersEvolution();
+
+  // Cria estrutura inicial com meses zerados
+  const monthsData = Array.from({ length: 12 }, (_, i) => {
+    const d = dayjs().subtract(11 - i, 'month');
+    return {
+      month: d.locale('pt-br').format('MMM'), // "Jan", "Fev", etc.
+      PENDENTE: 0,
+      CONCLUIDO: 0,
+      CANCELADO: 0,
+    };
+  });
+
+  // Agrupa pedidos
+  orders.forEach(order => {
+    const month = dayjs(order.createdAt).format('MMM');
+    const entry = monthsData.find(m => m.month === month);
+    if (entry && order.status) entry[order.status]++;
+  });
+
+  return monthsData;
+};
+
 module.exports = {
   create,
   findAll,
   findOne,
   update,
+  findStatistics,
+  findOrdersEvolution
 };

@@ -33,9 +33,25 @@ const update = catchAsync(async(req,res,next) => {
   sendResponse(res,200,"success",order);
 });
 
+const findStatistics = catchAsync(async(req,res,next) => {
+
+  const statistics = await orderService.findStatistics();
+
+  sendResponse(res,200,"success", statistics);
+});
+
+const findOrdersEvolution = catchAsync(async(req,res,next) => {
+
+  const monthsData = await orderService.findOrdersEvolution();
+
+  sendResponse(res,200,"success", monthsData);
+});
+
 module.exports = {
   create,
   findAll,
   findOne,
   update,
+  findStatistics,
+  findOrdersEvolution
 };

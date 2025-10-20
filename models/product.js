@@ -13,7 +13,8 @@ const productSchema = new Schema({
   },
   description: {
     type: String,
-    trim: true
+    trim: true,
+    required: [true, 'Descricao é obrigatório']
   },
   image: {
     type: String,

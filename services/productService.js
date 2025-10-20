@@ -38,18 +38,46 @@ const findOne = async(id) =>{
   return product;
 };
 
+const findStatistics = async() =>{
+
+  const products = await productDao.findStatistics();
+
+  const statistics = {
+    countActiveProds:0,
+    countInactiveProds:0,
+    countInPromo:0,
+    greatestDiscount:0,
+    countProdsAroma:0,
+    countProdsAuto:0,
+    countProdsCasa:0
+  };
+
+  for(let prod of products){
+    if(prod.active) statistics.countActiveProds++;
+    if(!prod.active) statistics.countInactiveProds++;
+
+    const discount = Number(prod.promoPercentage) || 0;
+    if(discount > 0 && prod.active) statistics.countInPromo++;
+    if(statistics.greatestDiscount < discount) statistics.greatestDiscount = discount;
+    
+    if(prod.categories){
+
+      prod.categories.forEach(cat => {
+        if (cat.includes('aromatizadores')) statistics.countProdsAroma++;
+        if (cat.includes('autoCuidado')) statistics.countProdsAuto++;
+        if (cat.includes('casaEBemEstar')) statistics.countProdsCasa++;
+      });
+
+    };
+
+  };
+  
+  return statistics;
+};
+
 const newProducts = async() =>{
 
   const products = await productDao.newProducts();
-  
-  return products;
-};
-
-const searchAutoComplete = async(reqQuery) =>{
-
-  if (!reqQuery || reqQuery.trim().length < 2) throw new AppError("A query de busca deve ter pelo menos 2 caracteres", 400);
-
-  const products = await productDao.searchAutoComplete(reqQuery);
   
   return products;
 };
@@ -96,7 +124,7 @@ module.exports = {
   newProducts,
   update,
   remove,
-  searchAutoComplete,
   findByCategory,
-  changeStatus
+  changeStatus,
+  findStatistics
 };
