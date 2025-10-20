@@ -1,4 +1,5 @@
 const { Schema, model } = require('mongoose');
+const dayjs = require('dayjs');
 
 const itemSchema = new Schema({
   _id: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
@@ -92,6 +93,13 @@ orderSchema.virtual('totalPixPrice').get(function () {
     return acc + pixPrice;
   },0);
   return totalPixPrice;
+});
+
+orderSchema.virtual('dayItWasIssued').get(function () {
+  if (!this.createdAt) return null;
+
+  // Exemplo: "18/10/2025 14:30"
+  return dayjs(this.createdAt).format('DD/MM/YYYY HH:mm');
 });
 
 const Order = model('orders', orderSchema);

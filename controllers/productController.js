@@ -53,20 +53,16 @@ const findOne = catchAsync(async(req,res,next) => {
   sendResponse(res,200,"success",product);
 });
 
+const findStatistics = catchAsync(async(req,res,next) => {
+
+  const statistics = await productService.findStatistics();
+
+  sendResponse(res,200,"success",statistics);
+});
+
 const newProducts = catchAsync(async(req,res,next) => {
 
   const products = await productService.newProducts();
-
-  sendResponse(res,200,"success",{
-      products, 
-      amount: products.length
-    });
-
-});
-
-const searchAutoComplete = catchAsync(async(req,res,next) => {
-
-  const products = await productService.searchAutoComplete(req.query.q);
 
   sendResponse(res,200,"success",{
       products, 
@@ -112,7 +108,7 @@ module.exports = {
   newProducts,
   update,
   remove,
-  searchAutoComplete,
   findByCategory,
-  changeStatus
+  changeStatus,
+  findStatistics
 };

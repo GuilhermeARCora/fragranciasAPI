@@ -5,6 +5,8 @@ const protectRoutesMiddleware = require('../middlewares/protectRoutesMiddleware'
 const restrictRouteMiddleware = require('../middlewares/restrictRoutesMiddleware');
 
 router.route('/').post(orderController.create);
+router.route('/statistics').get(protectRoutesMiddleware.protect, restrictRouteMiddleware.restrictTo('admin'), orderController.findStatistics);
+router.route('/ordersEvolution').get(protectRoutesMiddleware.protect, restrictRouteMiddleware.restrictTo('admin'), orderController.findOrdersEvolution);
 router.route('/:id').get(orderController.findOne);
 
 router.use(protectRoutesMiddleware.protect);
