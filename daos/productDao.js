@@ -1,6 +1,6 @@
 const Product = require('../models/product');
 
-const create = async(data) =>{
+const create = async(data) => {
 
   const created = await Product.create(data);
   const product = await Product.findById(created._id).select({ updatedAt: 0, createdAt: 0, __v: 0 });
@@ -12,43 +12,19 @@ const findAll = async (reqQuery) => {
   const filters = {};
 
   if (reqQuery.cod) filters.cod = Number(reqQuery.cod);
-  if (reqQuery.promoPercentage) filters.promoPercentage = Number(reqQuery.promoPercentage);
   if (reqQuery.fullPrice) filters.fullPrice = Number(reqQuery.fullPrice);
   if (reqQuery.active !== undefined) filters.active = reqQuery.active === 'true';
   if (reqQuery.categories) filters.categories = { $in: reqQuery.categories.split(',') };
 
-  let pipeline = [];
+  if (reqQuery.isInPromo === 'true' && reqQuery.promoPercentage) {
+    filters.promoPercentage = { $gte: Number(reqQuery.promoPercentage) };
+  } else if (reqQuery.isInPromo === 'true') {
+    filters.promoPercentage = { $gt: 0 };
+  } else if (reqQuery.promoPercentage) {
+    filters.promoPercentage = Number(reqQuery.promoPercentage);
+  };
 
-  if (reqQuery.name) {
-    pipeline = [
-      {
-        $search: {
-          index: 'productSearch',
-          compound: {
-            should: [
-              {
-                autocomplete: {
-                  query: reqQuery.name,
-                  path: 'name',
-                },
-              },
-            ],
-          },
-        },
-      },
-      { $match: filters },
-      { $sort: { name: -1 } },
-      {
-        $project: {
-          updatedAt:0,
-          createdAt:0,
-          __v:0
-        }
-      }
-    ];
-
-    return Product.aggregate(pipeline);
-  }
+  if (reqQuery.name) filters.name = reqQuery.name;
 
   return Product.find(filters, {updatedAt:0, createdAt:0, __v:0});
 };
@@ -71,6 +47,15 @@ const findOne = async(id) =>{
   return product;
 };
 
+const findStatistics = async() =>{
+
+  const products = await Product.find()
+    .select({active:1, promoPercentage:1, categories:1})
+    .lean();
+
+  return products;
+};
+
 const newProducts = async() =>{
 
   const products = await Product.find({},{createdAt: 0, updatedAt:0, cod:0, active:0, description:0, categories:0, __v:0})
@@ -78,43 +63,6 @@ const newProducts = async() =>{
     .limit(10);
 
   return products;
-};
-
-const searchAutoComplete = async(query) =>{
-
-  return await Product.aggregate([
-    {
-      $search: {
-        index: 'productSearch',
-        compound: {
-          should: [
-            {
-              autocomplete: {
-                query,
-                path: 'name'
-              }
-            },
-            {
-              autocomplete: {
-                query,
-                path: 'description'
-              }
-            }
-          ]
-        }
-      }
-    },
-    { $limit: 10 },
-    { $sort: { name: -1 } },
-    {
-      $project: {
-        updatedAt:0,
-        createdAt:0,
-        __v:0
-      }
-    }
-  ]);
-
 };
 
 const update = async({id, ...updates}) =>{
@@ -153,7 +101,7 @@ module.exports = {
   newProducts,
   update,
   remove,
-  searchAutoComplete,
   findByCategory,
-  changeStatus
+  changeStatus,
+  findStatistics
 };
