@@ -17,6 +17,14 @@ const apiRouter = require('../src/routes/index');
 
 app.set('trust proxy', 1);
 
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'ok',
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString()
+  });
+});
+
 // Set Security HTTP headers
 app.use(helmet());
 
