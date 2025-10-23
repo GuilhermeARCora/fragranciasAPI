@@ -1,18 +1,27 @@
 {
-  "name": "fraganciasapi",
+  "name": "fragranciasapi",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "dev": "nodemon server.js",
-    "start": "nodemon server.js",
-    "start:prod": "NODE_ENV=production nodemon server.js"
+    "dev": "nodemon --config config/nodemon.json",
+    "prod": "NODE_ENV=production nodemon server.js",
+    "lint": "eslint . --ext .js --cache --cache-location node_modules/.cache/eslint/.eslintcache",
+    "lint:fix": "npm run lint -- --fix",
+    "test": "jest --detectOpenHandles --forceExit --runInBand --coverage",
+    "test:live": "jest --watchAll --silent"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "nodemon": "^3.1.10"
+    "eslint": "^8.57.1",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.32.0",
+    "jest": "^30.2.0",
+    "mongodb-memory-server": "^10.2.3",
+    "nodemon": "^3.1.10",
+    "supertest": "^7.1.4"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.50.3",
@@ -26,13 +35,14 @@
     "express-rate-limit": "^7.5.0",
     "helmet": "^8.1.0",
     "hpp": "^0.2.3",
-    "html-to-text": "^9.0.5",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.16.0",
     "mongoose": "^8.15.1",
     "morgan": "^1.10.0",
     "multer": "^2.0.1",
     "sharp": "^0.34.2",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
     "xss-clean": "^0.1.4"
   }
 }

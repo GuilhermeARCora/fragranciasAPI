@@ -8,14 +8,14 @@ const connectDB = async () => {
     await mongoose.connect(DB, {
       serverApi: {
         version: ServerApiVersion.v1,
-        strict: false,             
-        deprecationErrors: true,
+        strict: false,
+        deprecationErrors: true
       }
     });
     console.log('✅ DB connection successful!');
   } catch (err) {
     console.error('❌ DB connection error:', err);
-    process.exit(1); 
+    process.exit(1);
   }
 };
 
