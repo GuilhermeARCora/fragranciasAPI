@@ -16,7 +16,22 @@ API built with Node.js, Express and Mongoose, following an MVC layered architect
 
 ![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)
 ![ESLint](https://img.shields.io/badge/ESLint-4B32C3?style=for-the-badge&logo=eslint&logoColor=white)
+
+## 🧪 Testing Stack
+
+![Jest](https://img.shields.io/badge/Jest-C21325?style=for-the-badge&logo=jest&logoColor=white)
+![Supertest](https://img.shields.io/badge/Supertest-000000?style=for-the-badge&logo=mocha&logoColor=white)
+![MongoMemoryServer](https://img.shields.io/badge/MongoDB%20Memory%20Server-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
 ![Postman](https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white)
+
+The project includes both automated and manual testing tools to ensure API reliability and data integrity.
+
+**Testing layers:**
+- 🔹 **Unit tests:** utilities and service logic (using Jest mocks)
+- 🔹 **Integration tests:** DAO, controllers, and routes (using Supertest + MongoDB Memory Server)
+- 🔹 **Manual testing:** performed with Postman collections for endpoint validation
+- 🔹 **Setup:** preconfigured Jest environment with in-memory MongoDB
+
 
 ## 📚 API Documentation
 

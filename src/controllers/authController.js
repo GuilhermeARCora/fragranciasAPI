@@ -1,24 +1,7 @@
-const jwt = require('jsonwebtoken');
+const generateToken = require('../utils/generateToken');
 const catchAsync = require('../utils/catchAsync');
 const authService = require('../services/authService');
 const sendResponse = require('../utils/sendResponse');
-
-const generateToken = (userId, res) => {
-  const token = jwt.sign({ _id: userId }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRES_IN
-  });
-
-  const cookieOptions = {
-    expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: process.env.NODE_ENV === 'production' ? 'Strict' : 'Lax'
-  };
-
-  res.cookie('jwt', token, cookieOptions);
-
-  return token;
-};
 
 const signup = catchAsync(async (req, res, next) => {
   const user = await authService.signup(req.body);
@@ -53,7 +36,7 @@ const logout = (req, res, next) => {
 const me = (req, res) => {
   const user = req.user.toObject();
 
-  sendResponse(res, 200, 'sucess', user);
+  sendResponse(res, 200, 'success', user);
 };
 
 module.exports = {

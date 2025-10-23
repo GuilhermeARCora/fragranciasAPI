@@ -1,4 +1,18 @@
+# dependencies
 node_modules/
-config.env
+
+# environment variables
 .env
-.vscode
+config.env
+*.vscode
+
+# build and coverage
+dist/
+build/
+coverage/
+
+# logs
+*.log
+
+# Jest cache
+.jest/

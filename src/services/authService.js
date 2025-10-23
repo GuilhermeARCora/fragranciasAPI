@@ -15,6 +15,8 @@ const signup = async (reqBody) => {
 
   const createdUser = await authDao.signup(user);
 
+  if (!createdUser) throw new AppError('Falha ao criar o usuário. Tente novamente mais tarde.', 500);
+
   createdUser.password = undefined;
 
   return createdUser;
@@ -24,7 +26,7 @@ const login = async (reqBody) => {
   const email = reqBody.email.toLowerCase().trim();
   const { password } = reqBody;
 
-  if (!email || !password) throw new AppError('Please provide email and password!', 400);
+  if (!email || !password) throw new AppError('Por favor insira email ou senha!', 400);
 
   // Retrieve user from database by email (also includes password with .select('+password'))
   const user = await authDao.login(email);

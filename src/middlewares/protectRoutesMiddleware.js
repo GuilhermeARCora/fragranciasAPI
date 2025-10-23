@@ -31,11 +31,6 @@ const protect = catchAsync(async (req, res, next) => {
     throw new AppError('O usuário que pertence a este token não existe mais', 401);
   }
 
-  // 4) Check if user changed password after the token was issued
-  if (currentUser.changedPasswordAfter(decoded.iat)) {
-    throw new AppError('Usuário mudou a senha recentemnte. Por favor acesse sua conta novamente', 401);
-  }
-
   // Attach the authenticated user to the request object for access in later middlewares/controllers
   req.user = currentUser;
   next();

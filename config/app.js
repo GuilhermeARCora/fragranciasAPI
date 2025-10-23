@@ -12,8 +12,8 @@ const { setupSwagger } = require('./swagger.config');
 
 const app = express();
 
-const globalErrorHandler = require('../controllers/errorController');
-const apiRouter = require('../routes/index');
+const globalErrorHandler = require('../src/controllers/errorController');
+const apiRouter = require('../src/routes/index');
 
 // Set Security HTTP headers
 app.use(helmet());
