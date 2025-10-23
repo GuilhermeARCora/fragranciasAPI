@@ -1,72 +1,40 @@
 const authDao = require('../daos/authDao');
-const jwt = require('jsonwebtoken');
-const AppError = require('.././utils/appError');
+const AppError = require('../utils/appError');
 const filterFields = require('../utils/filterFields');
 const User = require('../models/user');
 
-const generateToken = (userId, res) => {
+const signup = async (reqBody) => {
+  // Prevent injecting restricted fields like 'role' by explicitly selecting allowed attributes
+  const safeData = filterFields(reqBody, 'name', 'password', 'email', 'confirmPassword', 'confirmEmail');
 
-    const token = jwt.sign({ _id: userId }, process.env.JWT_SECRET, {
-        expiresIn: process.env.JWT_EXPIRES_IN,
-    });
+  // full user instance (to trigger virtual validation)
+  const user = new User(safeData);
 
-    const cookieOptions = {
-        expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production' ? "Strict" : "Lax"
-    };
+  // Trigger validation manually
+  await user.validate(); // this will throw if confirm fields are wrong
 
-    res.cookie('jwt', token, cookieOptions);
+  const createdUser = await authDao.signup(user);
 
-  return token; 
+  createdUser.password = undefined;
+
+  return createdUser;
 };
 
-const signup = async (reqBody, res,req) => {
+const login = async (reqBody) => {
+  const email = reqBody.email.toLowerCase().trim();
+  const { password } = reqBody;
 
-    // Prevent users from injecting restricted fields like 'role' by explicitly selecting allowed attributes
-    const safeData = filterFields(reqBody, 'name', 'password', 'email', 'confirmPassword', 'confirmEmail');
+  if (!email || !password) throw new AppError('Please provide email and password!', 400);
 
-    //full user instance (to trigger virtual validation)
-    const user = new User(safeData);
+  // Retrieve user from database by email (also includes password with .select('+password'))
+  const user = await authDao.login(email);
 
-    //Trigger validation manually
-    await user.validate(); // this will throw if confirm fields are wrong
+  if (!user || !(await user.correctPassword(password, user.password))) throw new AppError('Email ou senha inválidos', 401);
 
-    const createdUser = await authDao.signup(user);
-
-    createdUser.password = undefined;
-
-    const token = generateToken(createdUser._id, res);
-
-    return {
-        user: createdUser,
-        token
-    };
-};
-
-const login = async (reqBody, res) => {
-
-    const email = reqBody.email.toLowerCase().trim();
-    const password = reqBody.password;
-
-    if(!email || !password){
-       throw new AppError(`Please provide email and password!`, 400);
-    };
-
-    // Retrieve user from database by email (also includes password with .select('+password'))
-    const user = await authDao.login(email);
-
-    if(!user || !(await user.correctPassword(password, user.password))){
-        throw new AppError('Email ou senha inválidos', 401);
-    };
-
-    const token = generateToken(user._id, res);
-
-    return token;
+  return user;
 };
 
 module.exports = {
-    signup,
-    login
+  signup,
+  login
 };

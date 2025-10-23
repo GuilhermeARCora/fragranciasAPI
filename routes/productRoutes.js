@@ -1,4 +1,5 @@
 const express = require('express');
+
 const router = express.Router();
 const productController = require('../controllers/productController');
 const protectRoutesMiddleware = require('../middlewares/protectRoutesMiddleware');
@@ -22,7 +23,7 @@ router.post('/', uploadImage, productController.create);
 router.route('/:id/status').patch(productController.changeStatus);
 
 router.route('/:id')
-    .patch(uploadImage ,productController.update)
-    .delete(productController.remove);
+  .patch(uploadImage, productController.update)
+  .delete(productController.remove);
 
 module.exports = router;

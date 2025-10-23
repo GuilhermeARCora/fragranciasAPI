@@ -32,17 +32,17 @@ const productSchema = new Schema({
     default: true
   },
   promoPercentage: {
-    type: Number, 
+    type: Number,
     default: 0
   },
-  cod:{
+  cod: {
     type: String,
-    required:[true, 'Codigo é obrigatório'],
+    required: [true, 'Codigo é obrigatório'],
     unique: true
   }
 }, {
   strict: true,
-  collection: "products",
+  collection: 'products',
   timestamps: true,
   toJSON: { virtuals: true },
   id: false
