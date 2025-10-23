@@ -15,6 +15,8 @@ const app = express();
 const globalErrorHandler = require('../src/controllers/errorController');
 const apiRouter = require('../src/routes/index');
 
+app.set('trust proxy', 1);
+
 // Set Security HTTP headers
 app.use(helmet());
 
