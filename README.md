@@ -9,10 +9,11 @@ API built with Node.js, Express and Mongoose, following an MVC layered architect
 ![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=node.js&logoColor=white)
 ![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
 ![Mongoose](https://img.shields.io/badge/Mongoose-880000?style=for-the-badge&logo=mongoose&logoColor=white)
-![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
+
 ![JWT](https://img.shields.io/badge/JSON%20Web%20Token-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white)
-![Multer](https://img.shields.io/badge/Multer-FF6B6B?style=for-the-badge&logo=upload&logoColor=white)
 ![Helmet](https://img.shields.io/badge/Helmet-005B96?style=for-the-badge&logo=security&logoColor=white)
+![Multer](https://img.shields.io/badge/Multer-FF6B6B?style=for-the-badge&logo=upload&logoColor=white)
+
 ![Swagger](https://img.shields.io/badge/Swagger-85EA2D?style=for-the-badge&logo=swagger&logoColor=black)
 ![ESLint](https://img.shields.io/badge/ESLint-4B32C3?style=for-the-badge&logo=eslint&logoColor=white)
 ![Postman](https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white)
@@ -21,10 +22,12 @@ API built with Node.js, Express and Mongoose, following an MVC layered architect
 
 Interactive documentation and testing tools:
 
+//TODO
 - 🧩 **Swagger UI** — available at:  
   👉 [`/api-docs`](http://localhost:3000/api-docs)  
   *(auto-generated from JSDoc comments)*
 
+//TODO
 - 💼 **Postman Collection** — available soon at:  
   🔗 [View on Postman](#)  
   *(A complete collection with all API endpoints will be published here.)*
