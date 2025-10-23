@@ -24,16 +24,20 @@ const userSchema = new Schema({
   },
   password: {
     type: String,
-    required: [true, 'Password é obrigatório'],
-    minlength: [6, 'A senha precisa ter pelo menos 6 caracteres'],
+    required: [true, 'Senha é obrigatório'],
+    minlength: [8, 'A senha deve ter pelo menos 8 caracteres'],
+    match: [
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d])[A-Za-z\d\S]{8,}$/,
+      'A senha deve ter pelo menos 8 caracteres, incluindo 1 letra maiúscula, 1 letra minúscula, 1 número e 1 caractere especial'
+    ],
     trim: true,
     select: false
   },
-  passwordChangedAt: Date,
   active: {
     type: Boolean,
     default: true
-  }
+  },
+  passwordChangedAt: Date
 }, {
   strict: true,
   collection: 'users',
@@ -42,7 +46,6 @@ const userSchema = new Schema({
   id: false
 });
 
-// VIRTUAL PROPERTIES
 userSchema.virtual('confirmPassword').set(function (value) {
   this.confirmPasswordTemp = value;
 });
@@ -51,7 +54,6 @@ userSchema.virtual('confirmEmail').set(function (value) {
   this.confirmEmailTemp = value;
 });
 
-// MONGOOSE MIDDLEWARE
 userSchema.pre('validate', function (next) {
   if (this.isModified('password') && this.password !== this.confirmPasswordTemp) {
     this.invalidate('confirmPassword', 'As senhas não são iguais!');
@@ -78,20 +80,8 @@ userSchema.pre('save', async function (next) {
   return this.passwordChangedAt;
 });
 
-// INSTANCE METHODS
 userSchema.methods.correctPassword = async function (candidatePassword, userPassword) {
   return bcrypt.compare(candidatePassword, userPassword);
-};
-
-userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
-  if (this.passwordChangedAt) {
-    const changedTimestamp = parseInt(this.passwordChangedAt.getTime() / 1000, 10);
-
-    return JWTTimestamp < changedTimestamp;
-  }
-
-  // false means NOT changed
-  return false;
 };
 
 const User = model('users', userSchema);
