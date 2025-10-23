@@ -62,6 +62,8 @@ app.use('/api', limiter);
 // Routes
 app.use('/api/v1', apiRouter);
 
+app.use('/keep-alive', require('../src/keepAlive/keepAliveJob'));
+
 app.use(globalErrorHandler);
 
 module.exports = app;
