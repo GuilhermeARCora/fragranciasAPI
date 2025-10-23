@@ -24,26 +24,26 @@ itemSchema.virtual('currentPrice').get(function () {
 });
 
 const orderSchema = new Schema({
-    items:[itemSchema],
-    status:{
-        type: String,
-        trim: true,
-        enum:['PENDENTE', 'CONCLUIDO', 'CANCELADO'],
-        default: 'PENDENTE'
-    }
-},{
+  items: [itemSchema],
+  status: {
+    type: String,
+    trim: true,
+    enum: ['PENDENTE', 'CONCLUIDO', 'CANCELADO'],
+    default: 'PENDENTE'
+  }
+}, {
   strict: true,
-  collection: "orders",
+  collection: 'orders',
   timestamps: true,
   toJSON: { virtuals: true },
   toObject: { virtuals: true },
-  id: false      
+  id: false
 });
 
 orderSchema.virtual('totalUnits').get(function () {
   if (!this.items || this.items.length === 0) return 0;
 
-  const totalUnits = this.items.reduce((acc, item) => acc + (item.amount || 0) ,0);
+  const totalUnits = this.items.reduce((acc, item) => acc + (item.amount || 0), 0);
 
   return totalUnits;
 });
@@ -51,7 +51,7 @@ orderSchema.virtual('totalUnits').get(function () {
 orderSchema.virtual('totalFullPrice').get(function () {
   if (!this.items || this.items.length === 0) return 0;
 
-  const totalFullPrice = this.items.reduce((acc, item) => acc + (item.fullPrice * item.amount) ,0);
+  const totalFullPrice = this.items.reduce((acc, item) => acc + (item.fullPrice * item.amount), 0);
 
   return totalFullPrice;
 });
@@ -91,7 +91,7 @@ orderSchema.virtual('totalPixPrice').get(function () {
     const pixPrice = currentPrice * (1 - 0.05) * item.amount;
 
     return acc + pixPrice;
-  },0);
+  }, 0);
   return totalPixPrice;
 });
 

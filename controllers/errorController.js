@@ -1,23 +1,22 @@
 const AppError = require('../utils/appError');
 
-const handleCastErrorDB = err => {
-  const message = `Invalid ${err.path}: ${err.value}.`
+const handleCastErrorDB = (err) => {
+  const message = `Invalid ${err.path}: ${err.value}.`;
   return new AppError(message, 400);
 };
 
-const handleDuplicateFieldsDB = err => {
+const handleDuplicateFieldsDB = (err) => {
   const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
-  const message = `Campo com valor duplicado: ${value}, Por favor use outro valor!`
+
+  const message = `Campo com valor duplicado: ${value}, Por favor use outro valor!`;
   return new AppError(message, 400);
 };
 
-const handleValidationErrorDB = err => {
+const handleValidationErrorDB = (err) => {
+  const errors = Object.values(err.errors).map((el) => el.message);
 
-  const errors = Object.values(err.errors).map(el => el.message);
-
-  const message = `Invalid input data. ${errors.join('. ')}`
+  const message = `Invalid input data. ${errors.join('. ')}`;
   return new AppError(message, 400);
-
 };
 
 const handleJWTError = () => new AppError('Token inválido. Por favor entre em sua conta novamente!', 401);
@@ -26,39 +25,35 @@ const handleJWTExpiredError = () => new AppError('Seu token expirou. Por favor e
 
 const sendErrorDev = (err, res) => {
   res.status(err.statusCode).json({
-      status: err.status,
-      error:err,
-      message: err.message,
-      stack: err.stack
-    });
+    status: err.status,
+    error: err,
+    message: err.message,
+    stack: err.stack
+  });
 };
 
 const sendErrorProd = (err, res) => {
-
-  if(err.isOperational){
+  if (err.isOperational) {
     res.status(err.statusCode).json({
-        status: err.status,
-        message: err.message,
+      status: err.status,
+      message: err.message
     });
-  }else{
-    console.error('ERROR ', err)
+  } else {
+    console.error('ERROR ', err);
     res.status(500).json({
-      status:'error',
-      message:'Algo deu errado!'
-    })
+      status: 'error',
+      message: 'Algo deu errado!'
+    });
   }
+};
 
-}
+module.exports = (err, req, res, next) => {
+  err.statusCode = err.statusCode || 500;
+  err.status = err.status || 'error';
 
-module.exports = (err,req,res,next) => {
-
-   err.statusCode = err.statusCode || 500;
-   err.status = err.status || 'error';
-
-   if(process.env.NODE_ENV === 'development'){
-      sendErrorDev(err,res);
-   }else if(process.env.NODE_ENV === 'production'){
-     
+  if (process.env.NODE_ENV === 'development') {
+    sendErrorDev(err, res);
+  } else if (process.env.NODE_ENV === 'production') {
     let error = { ...err };
     error.message = err.message;
     error.name = err.name;
@@ -70,6 +65,5 @@ module.exports = (err,req,res,next) => {
     if (error.name === 'TokenExpiredError') error = handleJWTExpiredError();
 
     sendErrorProd(error, res);
-   };
-
+  }
 };

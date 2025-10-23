@@ -1,10 +1,10 @@
 const Product = require('../models/product');
 
-const create = async(data) => {
-
+const create = async (data) => {
   const created = await Product.create(data);
-  const product = await Product.findById(created._id).select({ updatedAt: 0, createdAt: 0, __v: 0 });
-  
+  const product = await Product
+    .findById(created._id).select({ updatedAt: 0, createdAt: 0, __v: 0 });
+
   return product;
 };
 
@@ -22,74 +22,70 @@ const findAll = async (reqQuery) => {
     filters.promoPercentage = { $gt: 0 };
   } else if (reqQuery.promoPercentage) {
     filters.promoPercentage = Number(reqQuery.promoPercentage);
-  };
+  }
 
   if (reqQuery.name) filters.name = reqQuery.name;
 
-  return Product.find(filters, {updatedAt:0, createdAt:0, __v:0});
+  return Product.find(filters, { updatedAt: 0, createdAt: 0, __v: 0 });
 };
 
-const findByCategory = async(category, limit, page) =>{
-
+const findByCategory = async (category, limit, page) => {
   const skip = (page - 1) * limit;
-  const products = await Product.find({ categories: category, active: true }, {createdAt: 0, updatedAt:0, cod:0, active:0, description:0, categories:0, __v:0})
-    .sort({name: -1})
+  const products = await Product.find({ categories: category, active: true }, {
+    createdAt: 0, updatedAt: 0, cod: 0, active: 0, description: 0, categories: 0, __v: 0
+  })
+    .sort({ name: -1 })
     .skip(skip)
     .limit(limit);
 
   return products;
 };
 
-const findOne = async(id) =>{
-
-  const product = await Product.findById(id, {updatedAt:0, createdAt:0, __v:0});
+const findOne = async (id) => {
+  const product = await Product.findById(id, { updatedAt: 0, createdAt: 0, __v: 0 });
 
   return product;
 };
 
-const findStatistics = async() =>{
-
+const findStatistics = async () => {
   const products = await Product.find()
-    .select({active:1, promoPercentage:1, categories:1})
+    .select({ active: 1, promoPercentage: 1, categories: 1 })
     .lean();
 
   return products;
 };
 
-const newProducts = async() =>{
-
-  const products = await Product.find({},{createdAt: 0, updatedAt:0, cod:0, active:0, description:0, categories:0, __v:0})
+const newProducts = async () => {
+  const products = await Product.find({}, {
+    createdAt: 0, updatedAt: 0, cod: 0, active: 0, description: 0, categories: 0, __v: 0
+  })
     .sort({ createdAt: -1 })
     .limit(10);
 
   return products;
 };
 
-const update = async({id, ...updates}) =>{
-
+const update = async ({ id, ...updates }) => {
   const product = await Product.findByIdAndUpdate(id, updates, {
-        new: true,
-        runValidators: true,
-    }
-  ).select({updatedAt:0, createdAt:0, __v:0});
+    new: true,
+    runValidators: true
+  }).select({ updatedAt: 0, createdAt: 0, __v: 0 });
 
   return product;
 };
 
-const changeStatus = async({id, ...updates}) =>{
-
+const changeStatus = async ({ id, ...updates }) => {
   const product = await Product.findByIdAndUpdate(id, updates, {
-        new: true,
-        runValidators: true
-    }
-  ).select({updatedAt:0, createdAt:0, __v:0});
+    new: true,
+    runValidators: true
+  }).select({ updatedAt: 0, createdAt: 0, __v: 0 });
 
   return product;
 };
 
-const remove = async(id) =>{
-
-  const deleted = await Product.findByIdAndDelete(id).select({updatedAt:0, createdAt:0, __v:0});
+const remove = async (id) => {
+  const deleted = await Product
+    .findByIdAndDelete(id).select({ updatedAt: 0, createdAt: 0, __v: 0 });
 
   return deleted;
 };
