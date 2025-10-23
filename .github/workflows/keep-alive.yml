@@ -1,0 +1,18 @@
+name: Keep Alive Trigger
+
+on:
+  schedule:
+    - cron: "0 0 */6 * *"
+  workflow_dispatch:
+
+jobs:
+  ping-api:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger API keep-alive endpoint
+        env:
+          KEEP_ALIVE_TOKEN: ${{ secrets.KEEP_ALIVE_TOKEN }}
+        run: |
+          curl -X POST https://SEU_DOMINIO.com/keep-alive/manual \
+               -H "Content-Type: application/json" \
+               -H "x-keep-alive-token: $KEEP_ALIVE_TOKEN"

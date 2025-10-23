@@ -5,6 +5,7 @@ module.exports = {
     es2021: true,
     jest: true
   },
+  plugins: ['import'],
   extends: ['eslint:recommended', 'airbnb-base'],
   parserOptions: {
     ecmaVersion: 12,
