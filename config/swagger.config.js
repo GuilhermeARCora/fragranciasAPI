@@ -18,7 +18,7 @@ const swaggerOptions = {
     servers: [
       {
         url: IS_PROD
-          ? 'http://localhost:3000'
+          ? 'https://fragranciasapi.onrender.com/api-docs/'
           : 'http://localhost:3000',
         description: IS_PROD ? 'Production server' : 'Local development server'
       }

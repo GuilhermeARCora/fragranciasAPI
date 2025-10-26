@@ -15,15 +15,8 @@ const app = express();
 const globalErrorHandler = require('../src/controllers/errorController');
 const apiRouter = require('../src/routes/index');
 
+// needed for the API host
 app.set('trust proxy', 1);
-
-app.get('/health', (req, res) => {
-  res.status(200).json({
-    status: 'ok',
-    uptime: process.uptime(),
-    timestamp: new Date().toISOString()
-  });
-});
 
 // Set Security HTTP headers
 app.use(helmet());
@@ -62,17 +55,14 @@ app.use(cookieParser());
 const limiter = rateLimit({
   max: process.env.NODE_ENV === 'development' ? 1000 : 100,
   windowMs: 60 * 60 * 1000,
-  message: 'Too many requests from this IP, please try again in an hour!'
+  message: 'Muitas requisições. Tente novamente em alguns minutos.'
 });
 
 setupSwagger(app);
 
 app.use('/api', limiter);
 
-// Routes
 app.use('/api/v1', apiRouter);
-
-app.use('/keep-alive', require('../src/keepAlive/keepAliveJob'));
 
 app.use(globalErrorHandler);
 
