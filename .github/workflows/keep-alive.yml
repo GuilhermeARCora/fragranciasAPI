@@ -13,6 +13,6 @@ jobs:
         env:
           KEEP_ALIVE_TOKEN: ${{ secrets.KEEP_ALIVE_TOKEN }}
         run: |
-          curl -X POST https://fragranciasapi.onrender.com/keep-alive/manual \
+          curl -X POST https://fragranciasapi.onrender.com/api/v1/keep-alive \
                -H "Content-Type: application/json" \
-               -H "x-keep-alive-token: $KEEP_ALIVE_TOKEN"
+               -u "keep-alive:$KEEP_ALIVE_TOKEN"
