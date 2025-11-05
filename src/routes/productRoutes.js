@@ -7,7 +7,7 @@ const restrictRouteMiddleware = require('../middlewares/restrictRoutesMiddleware
 const imageUpload = require('../middlewares/uploadImageMiddleware');
 
 router.route('/').get(productController.findAll);
-router.route('/novidades').get(productController.newProducts);
+router.route('/latest').get(productController.newProducts);
 router.route('/statistics').get(protectRoutesMiddleware.protect, restrictRouteMiddleware.restrictTo('admin'), productController.findStatistics);
 router.route('/category/:category').get(productController.findByCategory);
 router.route('/:id').get(productController.findOne);

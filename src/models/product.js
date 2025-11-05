@@ -25,7 +25,7 @@ const productSchema = new Schema({
   categories: {
     type: [String],
     required: [true, 'Categorias é obrigatório'],
-    enum: ['aromatizadores', 'autoCuidado', 'casaEBemEstar']
+    enum: ['aromatizadores', 'autoCuidado', 'casaEBemEstar', 'destaque']
   },
   active: {
     type: Boolean,
