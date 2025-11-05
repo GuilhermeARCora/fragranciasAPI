@@ -37,9 +37,7 @@ const findAll = async (query) => {
 };
 
 const findOne = async (id) => {
-  const order = await Order.findById(id, { updatedAt: 0, __v: 0 });
-  console.log(order.createdAt);
-  console.log(order.dayItWasIssued);
+  const order = await Order.findById(id, { updatedAt: 0, createdAt: 0, __v: 0 });
 
   return order;
 };

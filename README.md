@@ -32,20 +32,17 @@ The project includes both automated and manual testing tools to ensure API relia
 - 🔹 **Manual testing:** performed with Postman collections for endpoint validation
 - 🔹 **Setup:** preconfigured Jest environment with in-memory MongoDB
 
-
 ## 📚 API Documentation
 
 Interactive documentation and testing tools:
 
-//TODO
 - 🧩 **Swagger UI** — available at:  
-  👉 [`/api-docs`](http://localhost:3000/api-docs)  
+👉 <a href="https://fragranciasapi.onrender.com/api-docs/" target="_blank" rel="noopener noreferrer">/api-docs</a>
   *(auto-generated from JSDoc comments)*
 
-//TODO
-- 💼 **Postman Collection** — available soon at:  
+- 💼 **Postman Collection** — available at:  
   🔗 [View on Postman](#)  
-  *(A complete collection with all API endpoints will be published here.)*
+  *(A complete collection with all API endpoints.)*
 
 ## 🧹 Code Quality
 Linting and style enforcement with **ESLint (Airbnb base rules)**.  

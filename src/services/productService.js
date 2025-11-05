@@ -2,8 +2,28 @@ const productDao = require('../daos/productDao');
 const AppError = require('../utils/appError');
 const filterFields = require('../utils/filterFields');
 
+// There can only be 10 products with the category 'destaque'
+const checkIfDestaqueIsNotFull = async function (id = '') {
+  let amount;
+  const productsWithDestaqueCount = await productDao.countDestaque();
+
+  amount = productsWithDestaqueCount;
+
+  if (id) {
+    let productsWithDestaque = await productDao.findByCategory('destaque');
+    productsWithDestaque = productsWithDestaque.filter((v) => !(v._id === id));
+    amount = productsWithDestaque.length;
+  }
+
+  if (amount >= 10) throw new AppError('Já existem 10 produtos como destaque', 400);
+
+  return true;
+};
+
 const create = async (reqBody) => {
   const safeData = filterFields(reqBody, 'name', 'fullPrice', 'description', 'image', 'categories', 'active', 'promoPercentage', 'cod');
+
+  if (safeData.categories.includes('destaque')) await checkIfDestaqueIsNotFull();
 
   const createdProduct = await productDao.create(safeData);
 
@@ -19,7 +39,7 @@ const findAll = async (reqQuery) => {
 const findByCategory = async (category, limit = 10, page = 1) => {
   if (!category) throw new AppError('Categoria é obrigatório', 400);
 
-  const validCategories = ['aromatizadores', 'autoCuidado', 'casaEBemEstar'];
+  const validCategories = ['aromatizadores', 'autoCuidado', 'casaEBemEstar', 'destaque'];
   if (!validCategories.includes(category)) throw new AppError('Categoria inválida', 400);
 
   const products = await productDao.findByCategory(category, limit, page);
@@ -45,7 +65,8 @@ const findStatistics = async () => {
     greatestDiscount: 0,
     countProdsAroma: 0,
     countProdsAuto: 0,
-    countProdsCasa: 0
+    countProdsCasa: 0,
+    countProdsDest: 0
   };
 
   products.forEach((prod) => {
@@ -61,6 +82,7 @@ const findStatistics = async () => {
         if (cat.includes('aromatizadores')) statistics.countProdsAroma++;
         if (cat.includes('autoCuidado')) statistics.countProdsAuto++;
         if (cat.includes('casaEBemEstar')) statistics.countProdsCasa++;
+        if (cat.includes('destaque')) statistics.countProdsDest++;
       });
     }
   });
@@ -78,6 +100,8 @@ const update = async (reqParamsId, reqBody) => {
   const id = reqParamsId;
 
   const safeData = filterFields(reqBody, 'name', 'fullPrice', 'description', 'image', 'categories', 'active', 'promoPercentage', 'cod');
+
+  if (safeData.categories.includes('destaque')) await checkIfDestaqueIsNotFull(id);
 
   const product = await productDao.update({ id, ...safeData });
 

@@ -4,14 +4,14 @@ const { createClient } = require('@supabase/supabase-js');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 
-// 1) init Supabase admin client
+// init Supabase admin client
 const supa = createClient(
   process.env.SUPABASE_URL,
   process.env.SUPABASE_SERVICE_KEY,
   { auth: { persistSession: false, detectSessionInUrl: false } }
 );
 
-// 2) re-usable multer instance (memory)
+// re-usable multer instance (memory)
 const upload = multer({ storage: multer.memoryStorage() });
 
 /**
