@@ -31,7 +31,9 @@ const login = async (reqBody) => {
   // Retrieve user from database by email (also includes password with .select('+password'))
   const user = await authDao.login(email);
 
-  if (!user || !(await user.correctPassword(password, user.password))) throw new AppError('Email ou senha inválidos', 401);
+  if (!user) throw new AppError('Usuário não encontrado', 404);
+
+  if (!(await user.correctPassword(password, user.password))) throw new AppError('Email ou senha inválidos', 401);
 
   return user;
 };
