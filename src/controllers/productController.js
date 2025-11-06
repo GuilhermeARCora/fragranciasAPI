@@ -69,9 +69,7 @@ const newProducts = catchAsync(async (req, res, next) => {
 const update = catchAsync(async (req, res, next) => {
   const payload = { ...req.body };
 
-  if (req.fileUrl) {
-    payload.image = req.fileUrl; // só atualiza se realmente veio arquivo novo
-  }
+  if (req.fileUrl) payload.image = req.fileUrl;
 
   const product = await productService.update(req.params.id, payload);
 
