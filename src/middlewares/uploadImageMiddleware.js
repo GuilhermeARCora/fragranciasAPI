@@ -1,15 +1,8 @@
 const multer = require('multer');
 const sharp = require('sharp');
-const { createClient } = require('@supabase/supabase-js');
+const supa = require('../../config/supabase');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
-
-// init Supabase admin client
-const supa = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_KEY,
-  { auth: { persistSession: false, detectSessionInUrl: false } }
-);
 
 // re-usable multer instance (memory)
 const upload = multer({ storage: multer.memoryStorage() });
@@ -72,6 +65,7 @@ function imageUpload(bucket, opts = {}) {
         .storage
         .from(bucket)
         .getPublicUrl(path);
+
       req.fileUrl = data.publicUrl;
 
       next();

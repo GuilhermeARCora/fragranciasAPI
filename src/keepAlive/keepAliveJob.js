@@ -2,19 +2,16 @@
 // databases alive, as I decided to use free resources
 // manual 'pings' are required.
 
-const path = require('path');
 const fs = require('fs');
+const path = require('path');
 const express = require('express');
 const mongoose = require('mongoose');
-const imageUpload = require('../middlewares/uploadImageMiddleware');
+const supa = require('../../config/supabase');
 const catchAsync = require('../utils/catchAsync');
+const deleteImage = require('../utils/supabaseDelete');
+const AppError = require('../utils/appError');
 
 const router = express.Router();
-
-const uploadImage = imageUpload('keep-alive-images', {
-  folder: 'keep-alive/',
-  fieldName: 'image'
-});
 
 // eslint-disable-next-line consistent-return
 router.use((req, res, next) => {
@@ -58,28 +55,55 @@ const formatTimeStamp = function () {
   }).format(new Date());
 };
 
-const keepMongoAlive = catchAsync(async () => {
+const keepMongoAlive = async (newUrl) => {
   const collection = mongoose.connection.collection('keepalive');
   await collection.updateOne(
     { _id: 'keep-alive' },
-    { $set: { lastRun: formatTimeStamp() } },
+    { $set: { lastRun: formatTimeStamp(), imageUrl: newUrl } },
     { upsert: true }
   );
-});
+};
 
-const keepSupabaseAlive = catchAsync(async () => {
+const keepSupabaseAlive = async (previousUrl) => {
+  const bucket = 'keep-alive-images';
+  const folder = 'keep-alive/';
   const dummyPath = path.join(__dirname, './keep-alive.webp');
-  const req = { file: { buffer: fs.readFileSync(dummyPath) } };
-  const res = {};
-  const next = (err) => { if (err) throw err; };
 
-  await uploadImage[1](req, res, next);
-});
+  if (previousUrl) {
+    try {
+      await deleteImage(bucket, previousUrl);
+    } catch (e) {
+      throw new AppError('Erro ao deletar imagem', e.status);
+    }
+  }
 
+  const buffer = fs.readFileSync(dummyPath);
+
+  const filePath = `${folder}${Date.now()}.webp`;
+  const { error } = await supa.storage.from(bucket).upload(filePath, buffer, {
+    contentType: 'image/webp',
+    upsert: true
+  });
+  if (error) throw error;
+
+  const { data } = supa.storage.from(bucket).getPublicUrl(filePath);
+
+  return data.publicUrl;
+};
+
+// controller
 const keepAliveTask = catchAsync(async (req, res, next) => {
-  await keepMongoAlive();
-  await keepSupabaseAlive();
-  if (res) res.status(200).json({ status: 'success', message: 'Keep-alive executed' });
+  const collection = mongoose.connection.collection('keepalive');
+  const currentDoc = await collection.findOne({ _id: 'keep-alive' });
+
+  const newUrl = await keepSupabaseAlive(currentDoc?.imageUrl);
+
+  await keepMongoAlive(newUrl);
+
+  res.status(200).json({
+    status: 'success',
+    message: 'Keep-alive executed'
+  });
 });
 
 const healthTask = catchAsync(async (req, res, next) => {
