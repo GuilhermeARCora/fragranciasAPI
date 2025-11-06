@@ -1,6 +1,7 @@
 const productDao = require('../daos/productDao');
 const AppError = require('../utils/appError');
 const filterFields = require('../utils/filterFields');
+const deleteImage = require('../utils/supabaseDelete');
 
 // There can only be 10 products with the category 'destaque'
 const checkIfDestaqueIsNotFull = async function (id = '') {
@@ -98,16 +99,23 @@ const newProducts = async () => {
 
 const update = async (reqParamsId, reqBody) => {
   const id = reqParamsId;
+  const currentProduct = await productDao.findOne(id);
+  if (!currentProduct) throw new AppError('Produto não encontrado', 404);
+
+  if (reqBody.image && currentProduct.image && reqBody.image !== currentProduct.image) {
+    await deleteImage(process.env.PRODUCTS_BUCKET, currentProduct.image);
+  }
 
   const safeData = filterFields(reqBody, 'name', 'fullPrice', 'description', 'image', 'categories', 'active', 'promoPercentage', 'cod');
+  safeData.image = reqBody.image || currentProduct.image;
 
   if (safeData.categories.includes('destaque')) await checkIfDestaqueIsNotFull(id);
 
-  const product = await productDao.update({ id, ...safeData });
+  const updatedProduct = await productDao.update({ id, ...safeData });
 
-  if (!product) throw new AppError('O Id deste produto não existe!', 404);
+  if (!updatedProduct) throw new AppError('O Id deste produto não existe!', 404);
 
-  return product;
+  return updatedProduct;
 };
 
 const changeStatus = async (reqParamsId, reqBody) => {
@@ -123,9 +131,12 @@ const changeStatus = async (reqParamsId, reqBody) => {
 };
 
 const remove = async (id) => {
-  const deleted = await productDao.remove(id);
+  const product = await productDao.findOne(id);
+  if (!product) throw new AppError('Produto não encontrado', 404);
 
-  if (!deleted) throw new AppError('O Id deste produto não existe!', 404);
+  if (product.image) await deleteImage(process.env.PRODUCTS_BUCKET, product.image);
+
+  const deleted = await productDao.remove(id);
 
   return deleted;
 };

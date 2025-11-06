@@ -16,7 +16,7 @@ router.use(protectRoutesMiddleware.protect);
 router.use(restrictRouteMiddleware.restrictTo('admin'));
 
 // bucket = "products-images, folder = "products/", fieldName = "image" "
-const uploadImage = imageUpload('products-images', { folder: 'products/', fieldName: 'image' });
+const uploadImage = imageUpload(process.env.PRODUCTS_BUCKET, { folder: 'products/', fieldName: 'image' });
 
 router.post('/', uploadImage, productController.create);
 
