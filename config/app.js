@@ -15,8 +15,7 @@ const app = express();
 const globalErrorHandler = require('../src/controllers/errorController');
 const apiRouter = require('../src/routes/index');
 
-// needed for the API host
-app.set('trust proxy', 1);
+if (process.env.NODE_ENV === 'production') app.set('trust proxy', 1);
 
 // Set Security HTTP headers
 app.use(helmet());
