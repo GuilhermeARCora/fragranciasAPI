@@ -32,6 +32,8 @@ The project includes both automated and manual testing tools to ensure API relia
 - 🔹 **Manual testing:** performed with Postman collections for endpoint validation
 - 🔹 **Setup:** preconfigured Jest environment with in-memory MongoDB
 
+**Status**: Unit tests to be added gradually.
+
 ## 📚 API Documentation
 
 Interactive documentation and testing tools:

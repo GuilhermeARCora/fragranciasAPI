@@ -24,9 +24,7 @@ const findAll = async (reqQuery) => {
     filters.promoPercentage = { $gte: Number(reqQuery.promoPercentage) };
   }
 
-  if (reqQuery.name) filters.name = reqQuery.name;
-
-  return Product.find(filters, { updatedAt: 0, createdAt: 0, __v: 0 });
+  return Product.find(filters, { updatedAt: 0, createdAt: 0, __v: 0 }).sort({ name: -1 });
 };
 
 const findByCategory = async (category, limit, page) => {
