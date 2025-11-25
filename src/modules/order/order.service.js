@@ -50,27 +50,24 @@ const update = async (reqParamsId, reqBody) => {
 };
 
 const findStatistics = async () => {
-  const orders = await orderDao.findStatistics();
+  const items = await orderDao.findItemsInOrders();
+  const [{
+    amountStatusPendente,
+    amountStatusConcluido,
+    amountStatusCancelado,
+    amountInTheLastTwoDays
+  }] = await orderDao.findStatusStatistics();
 
   const statistics = {
-    amountStatusPendente: 0,
-    amountStatusConcluido: 0,
-    amountStatusCancelado: 0,
-    amountInTheLastTwoDays: 0,
+    amountStatusPendente,
+    amountStatusConcluido,
+    amountStatusCancelado,
+    amountInTheLastTwoDays,
     amountWithFinalPriceOverFiveHundred: 0
   };
 
-  const limitDate = dayjs().subtract(2, 'day');
-
-  orders.forEach((order) => {
-    if (order.status === 'PENDENTE') statistics.amountStatusPendente++;
-    else if (order.status === 'CONCLUIDO') statistics.amountStatusConcluido++;
-    else if (order.status === 'CANCELADO') statistics.amountStatusCancelado++;
-
-    if (dayjs(order.createdAt).isAfter(limitDate)) statistics.amountInTheLastTwoDays++;
-
-    if (order.totalCurrentPrice > 500) statistics.amountWithFinalPriceOverFiveHundred++;
-  });
+  statistics.amountWithFinalPriceOverFiveHundred = items
+    .reduce((acc, order) => acc + (order.totalCurrentPrice > 500 ? 1 : 0), 0);
 
   return statistics;
 };
@@ -78,25 +75,27 @@ const findStatistics = async () => {
 const findOrdersEvolution = async () => {
   const orders = await orderDao.findOrdersEvolution();
 
-  // Cria estrutura inicial com meses zerados
   const monthsData = Array.from({ length: 12 }, (_, i) => {
     const d = dayjs().subtract(11 - i, 'month');
     return {
-      month: d.locale('pt-br').format('MMM'), // "Jan", "Fev", etc.
+      key: d.format('MM-YYYY'),
+      month: d.locale('pt-br').format('MMM'),
       PENDENTE: 0,
       CONCLUIDO: 0,
       CANCELADO: 0
     };
   });
 
-  // Agrupa pedidos
   orders.forEach((order) => {
-    const month = dayjs(order.createdAt).format('MMM');
-    const entry = monthsData.find((m) => m.month === month);
-    if (entry && order.status) entry[order.status]++;
+    const orderKey = dayjs(order.createdAt).format('MM-YYYY');
+    const entry = monthsData.find((m) => m.key === orderKey);
+    if (entry && order.status) {
+      entry[order.status]++;
+    }
   });
 
-  return monthsData;
+  // eslint-disable-next-line no-unused-vars
+  return monthsData.map(({ key, ...rest }) => rest);
 };
 
 module.exports = {
