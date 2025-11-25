@@ -54,7 +54,7 @@ const findOne = catchAsync(async (req, res, next) => {
 const findStatistics = catchAsync(async (req, res, next) => {
   const statistics = await productService.findStatistics();
 
-  sendResponse(res, 200, 'success', statistics);
+  sendResponse(res, 200, 'success', ...statistics);
 });
 
 const newProducts = catchAsync(async (req, res, next) => {

@@ -51,15 +51,67 @@ const update = async ({ id, ...updates }) => {
   return order;
 };
 
-const findStatistics = async () => {
-  const orders = await Order.find();
+const findItemsInOrders = async () => Order.find({}, {
+  'items.fullPrice': 1,
+  'items.promoPercentage': 1,
+  'items.amount': 1
+});
 
-  return orders;
+const findStatusStatistics = async () => {
+  const limitDate = dayjs().subtract(2, 'day').toDate();
+
+  return Order.aggregate(
+    [
+      {
+        $project: {
+          _id: 0,
+          items: 0,
+          __v: 0,
+          updatedAt: 0
+        }
+      },
+
+      {
+        $group: {
+          _id: null,
+          amountStatusPendente: {
+            $sum: {
+              $cond: [
+                { $eq: ['$status', 'PENDENTE'] }, 1, 0
+              ]
+            }
+          },
+          amountStatusConcluido: {
+            $sum: {
+              $cond: [
+                { $eq: ['$status', 'CONCLUIDO'] }, 1, 0
+              ]
+            }
+          },
+          amountStatusCancelado: {
+            $sum: {
+              $cond: [
+                { $eq: ['$status', 'CANCELADO'] }, 1, 0
+              ]
+            }
+          },
+          amountInTheLastTwoDays: {
+            $sum: {
+              $cond: [
+                { $gte: ['$createdAt', limitDate] }, 1, 0
+              ]
+            }
+          }
+        }
+      }
+    ]
+  );
 };
 
 const findOrdersEvolution = async () => {
-  const twelveMonthsAgo = dayjs().subtract(12, 'month').startOf('month');
-  const orders = await Order.find({ createdAt: { $gte: twelveMonthsAgo.toDate() } })
+  const twelveMonthsAgo = dayjs().subtract(12, 'month').startOf('month').toDate();
+  const orders = await Order
+    .find({ createdAt: { $gte: twelveMonthsAgo } })
     .select({ createdAt: 1, status: 1 })
     .lean();
 
@@ -71,6 +123,7 @@ module.exports = {
   findAll,
   findOne,
   update,
-  findStatistics,
+  findItemsInOrders,
+  findStatusStatistics,
   findOrdersEvolution
 };

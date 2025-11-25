@@ -57,36 +57,7 @@ const findOne = async (id) => {
 };
 
 const findStatistics = async () => {
-  const products = await productDao.findStatistics();
-
-  const statistics = {
-    countActiveProds: 0,
-    countInactiveProds: 0,
-    countInPromo: 0,
-    greatestDiscount: 0,
-    countProdsAroma: 0,
-    countProdsAuto: 0,
-    countProdsCasa: 0,
-    countProdsDest: 0
-  };
-
-  products.forEach((prod) => {
-    if (prod.active) statistics.countActiveProds++;
-    else statistics.countInactiveProds++;
-
-    const discount = Number(prod.promoPercentage) || 0;
-    if (discount > 0 && prod.active) statistics.countInPromo++;
-    if (statistics.greatestDiscount < discount) statistics.greatestDiscount = discount;
-
-    if (prod.categories) {
-      prod.categories.forEach((cat) => {
-        if (cat.includes('aromatizadores')) statistics.countProdsAroma++;
-        if (cat.includes('autoCuidado')) statistics.countProdsAuto++;
-        if (cat.includes('casaEBemEstar')) statistics.countProdsCasa++;
-        if (cat.includes('destaque')) statistics.countProdsDest++;
-      });
-    }
-  });
+  const statistics = await productDao.findStatistics();
 
   return statistics;
 };
