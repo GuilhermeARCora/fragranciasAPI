@@ -51,13 +51,175 @@ const findOne = async (id) => {
   return product;
 };
 
-const findStatistics = async () => {
-  const products = await Product.find()
-    .select({ active: 1, promoPercentage: 1, categories: 1 })
-    .lean();
-
-  return products;
-};
+const findStatistics = () => Product.aggregate(
+  [
+    {
+      $project: {
+        active: 1,
+        promoPercentage: 1,
+        categories: 1
+      }
+    }, {
+      $facet: {
+        prodStats: [
+          {
+            $group: {
+              _id: null,
+              countActiveProds: {
+                $sum: {
+                  $cond: [
+                    {
+                      $eq: ['$active', true]
+                    }, 1, 0
+                  ]
+                }
+              },
+              countInactiveProds: {
+                $sum: {
+                  $cond: [
+                    {
+                      $eq: ['$active', false]
+                    }, 1, 0
+                  ]
+                }
+              },
+              countInPromo: {
+                $sum: {
+                  $cond: [
+                    {
+                      $and: [
+                        {
+                          $eq: ['$active', true]
+                        }, {
+                          $gt: ['$promoPercentage', 0]
+                        }
+                      ]
+                    }, 1, 0
+                  ]
+                }
+              },
+              greatestDiscount: {
+                $max: '$promoPercentage'
+              }
+            }
+          }
+        ],
+        categoryStats: [
+          {
+            $unwind: '$categories'
+          }, {
+            $group: {
+              _id: null,
+              countProdsAroma: {
+                $sum: {
+                  $cond: [
+                    {
+                      $and: [
+                        {
+                          eq: ['active', true]
+                        }, {
+                          $eq: ['$categories', 'aromatizadores']
+                        }
+                      ]
+                    }, 1, 0
+                  ]
+                }
+              },
+              countProdsAuto: {
+                $sum: {
+                  $cond: [
+                    {
+                      $and: [
+                        {
+                          eq: ['$active', true]
+                        }, {
+                          $eq: ['$categories', 'autoCuidado']
+                        }
+                      ]
+                    }, 1, 0
+                  ]
+                }
+              },
+              countProdsCasa: {
+                $sum: {
+                  $cond: [
+                    {
+                      $and: [
+                        {
+                          eq: ['$active', true]
+                        }, {
+                          $eq: ['$categories', 'casaEBemEstar']
+                        }
+                      ]
+                    }, 1, 0
+                  ]
+                }
+              },
+              countProdsDest: {
+                $sum: {
+                  $cond: [
+                    {
+                      $and: [
+                        {
+                          eq: ['$active', true]
+                        }, {
+                          $eq: ['$categories', 'destaque']
+                        }
+                      ]
+                    }, 1, 0
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      }
+    }, {
+      $project: {
+        countActiveProds: {
+          $arrayElemAt: [
+            '$prodStats.countActiveProds', 0
+          ]
+        },
+        countInactiveProds: {
+          $arrayElemAt: [
+            '$prodStats.countInactiveProds', 0
+          ]
+        },
+        countInPromo: {
+          $arrayElemAt: [
+            '$prodStats.countInPromo', 0
+          ]
+        },
+        greatestDiscount: {
+          $arrayElemAt: [
+            '$prodStats.greatestDiscount', 0
+          ]
+        },
+        countProdsAroma: {
+          $arrayElemAt: [
+            '$categoryStats.countProdsAroma', 0
+          ]
+        },
+        countProdsAuto: {
+          $arrayElemAt: [
+            '$categoryStats.countProdsAuto', 0
+          ]
+        },
+        countProdsCasa: {
+          $arrayElemAt: [
+            '$categoryStats.countProdsCasa', 0
+          ]
+        },
+        countProdsDest: {
+          $arrayElemAt: [
+            '$categoryStats.countProdsDest', 0
+          ]
+        }
+      }
+    }
+  ]
+);
 
 const newProducts = async () => {
   const products = await Product.find({}, {
