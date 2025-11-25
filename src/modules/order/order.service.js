@@ -1,7 +1,7 @@
 const dayjs = require('dayjs');
-const orderDao = require('../daos/orderDao');
-const AppError = require('../utils/appError');
-const filterFields = require('../utils/filterFields');
+const orderDao = require('./order.dao');
+const AppError = require('../../core/utils/appError');
+const filterFields = require('../../core/utils/filterFields');
 require('dayjs/locale/pt-br');
 
 dayjs.locale('pt-br');

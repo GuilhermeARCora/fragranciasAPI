@@ -12,8 +12,8 @@ const { setupSwagger } = require('./swagger.config');
 
 const app = express();
 
-const globalErrorHandler = require('../src/controllers/errorController');
-const apiRouter = require('../src/routes/index');
+const globalErrorHandler = require('../src/core/errors/globalErrorHandler');
+const apiRouter = require('./routes');
 
 if (process.env.NODE_ENV === 'production') app.set('trust proxy', 1);
 

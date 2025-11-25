@@ -1,11 +1,11 @@
 const express = require('express');
 
 const router = express.Router();
-const productRouter = require('./productRoutes');
-const authRoutes = require('./authRoutes');
-const orderRouter = require('./orderRoutes');
-const keepAliveRouter = require('../keepAlive/keepAliveJob');
-const AppError = require('../utils/appError');
+const productRouter = require('../src/modules/product/product.routes');
+const authRoutes = require('../src/modules/auth/auth.routes');
+const orderRouter = require('../src/modules/order/order.routes');
+const keepAliveRouter = require('../src/modules/keepAlive/keepAliveJob');
+const AppError = require('../src/core/utils/appError');
 
 router.use('/orders', orderRouter);
 router.use('/auth', authRoutes);

@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const generateToken = require('../../../src/utils/generateToken');
+const generateToken = require('../../../../src/core/utils/generateToken');
 
 describe('generateToken()', () => {
   const OLD_ENV = process.env;
