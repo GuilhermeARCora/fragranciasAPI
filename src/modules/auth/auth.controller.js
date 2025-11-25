@@ -1,7 +1,7 @@
-const generateToken = require('../utils/generateToken');
-const catchAsync = require('../utils/catchAsync');
-const authService = require('../services/authService');
-const sendResponse = require('../utils/sendResponse');
+const generateToken = require('../../core/utils/generateToken');
+const catchAsync = require('../../core/utils/catchAsync');
+const authService = require('./auth.service');
+const sendResponse = require('../../core/utils/sendResponse');
 
 const signup = catchAsync(async (req, res, next) => {
   const user = await authService.signup(req.body);

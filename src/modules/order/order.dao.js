@@ -1,5 +1,5 @@
 const dayjs = require('dayjs');
-const Order = require('../models/order');
+const Order = require('./order.model');
 
 const create = async (data) => {
   const created = await Order.create(data);
