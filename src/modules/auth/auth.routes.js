@@ -1,12 +1,12 @@
 const express = require('express');
 
 const router = express.Router();
-const authController = require('../controllers/authController');
-const protectRoutesMiddleware = require('../middlewares/protectRoutesMiddleware');
+const authController = require('./auth.controller');
+const protectRoutesMiddleware = require('../../core/middlewares/protectRoutes.middleware');
 
 /**
  * @swagger
- * /api/v1/users/signup:
+ * /api/v1/auth/signup:
  *   post:
  *     summary: Cria um novo usuário
  *     tags: [Auth]
@@ -49,7 +49,7 @@ router.post('/signup', authController.signup);
 
 /**
  * @swagger
- * /api/v1/users/login:
+ * /api/v1/auth/login:
  *   post:
  *     summary: Faz login do usuário e retorna o token JWT
  *     tags: [Auth]

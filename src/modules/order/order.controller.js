@@ -1,6 +1,6 @@
-const catchAsync = require('../utils/catchAsync');
-const sendResponse = require('../utils/sendResponse');
-const orderService = require('../services/orderService');
+const catchAsync = require('../../core/utils/catchAsync');
+const sendResponse = require('../../core/utils/sendResponse');
+const orderService = require('./order.service');
 
 const create = catchAsync(async (req, res, next) => {
   const order = await orderService.create(req.body);

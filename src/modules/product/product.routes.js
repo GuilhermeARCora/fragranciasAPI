@@ -1,10 +1,10 @@
 const express = require('express');
 
 const router = express.Router();
-const productController = require('../controllers/productController');
-const protectRoutesMiddleware = require('../middlewares/protectRoutesMiddleware');
-const restrictRouteMiddleware = require('../middlewares/restrictRoutesMiddleware');
-const imageUpload = require('../middlewares/uploadImageMiddleware');
+const productController = require('./product.controller');
+const protectRoutesMiddleware = require('../../core/middlewares/protectRoutes.middleware');
+const restrictRouteMiddleware = require('../../core/middlewares/restrictRoutes.middleware');
+const imageUpload = require('../../core/middlewares/uploadImage.middleware');
 
 router.route('/').get(productController.findAll);
 router.route('/latest').get(productController.newProducts);

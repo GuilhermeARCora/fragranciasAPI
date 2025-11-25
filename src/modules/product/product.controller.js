@@ -1,7 +1,7 @@
-const catchAsync = require('../utils/catchAsync');
-const sendResponse = require('../utils/sendResponse');
-const productService = require('../services/productService');
-const AppError = require('../utils/appError');
+const catchAsync = require('../../core/utils/catchAsync');
+const sendResponse = require('../../core/utils/sendResponse');
+const productService = require('./product.service');
+const AppError = require('../../core/utils/appError');
 
 // eslint-disable-next-line consistent-return
 const create = catchAsync(async (req, res, next) => {

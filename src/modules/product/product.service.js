@@ -1,7 +1,7 @@
-const productDao = require('../daos/productDao');
-const AppError = require('../utils/appError');
-const filterFields = require('../utils/filterFields');
-const deleteImage = require('../utils/supabaseDelete');
+const productDao = require('./product.dao');
+const AppError = require('../../core/utils/appError');
+const filterFields = require('../../core/utils/filterFields');
+const deleteImage = require('../../core/utils/supabaseDelete');
 
 // There can only be 10 products with the category 'destaque'
 const checkIfDestaqueIsNotFull = async function (id = '') {

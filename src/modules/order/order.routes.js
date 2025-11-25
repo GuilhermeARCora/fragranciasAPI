@@ -1,9 +1,9 @@
 const express = require('express');
 
 const router = express.Router();
-const orderController = require('../controllers/orderController');
-const protectRoutesMiddleware = require('../middlewares/protectRoutesMiddleware');
-const restrictRouteMiddleware = require('../middlewares/restrictRoutesMiddleware');
+const orderController = require('./order.controller');
+const protectRoutesMiddleware = require('../../core/middlewares/protectRoutes.middleware');
+const restrictRouteMiddleware = require('../../core/middlewares/restrictRoutes.middleware');
 
 router.route('/').post(orderController.create);
 router.route('/statistics')

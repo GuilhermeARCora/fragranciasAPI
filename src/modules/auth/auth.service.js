@@ -1,7 +1,7 @@
-const authDao = require('../daos/authDao');
-const AppError = require('../utils/appError');
-const filterFields = require('../utils/filterFields');
-const User = require('../models/user');
+const authDao = require('./auth.dao');
+const AppError = require('../../core/utils/appError');
+const filterFields = require('../../core/utils/filterFields');
+const User = require('./user.model');
 
 const signup = async (reqBody) => {
   // Prevent injecting restricted fields like 'role' by explicitly selecting allowed attributes

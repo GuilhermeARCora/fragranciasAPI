@@ -1,4 +1,4 @@
-const User = require('../models/user');
+const User = require('./user.model');
 
 const signup = async (user) => {
   const createdUser = await user.save();

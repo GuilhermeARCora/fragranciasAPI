@@ -1,4 +1,4 @@
-const supa = require('../../config/supabase');
+const supa = require('../../../config/supabase');
 
 /**
  * Delete an image from a Supabase bucket.

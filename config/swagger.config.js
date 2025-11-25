@@ -2,7 +2,7 @@ require('dotenv').config();
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const rateLimit = require('express-rate-limit');
-const { swaggerComponents } = require('../src/swagger/components');
+const { swaggerComponents } = require('../src/core/swagger/components');
 
 const ENV = process.env.NODE_ENV || 'development';
 const IS_PROD = ENV === 'production';
@@ -31,7 +31,7 @@ const swaggerOptions = {
     },
     security: [{ bearerAuth: [] }]
   },
-  apis: ['./src/routes/*.js', './src/models/*.js']
+  apis: ['./src/modules/**/*.js']
 };
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);

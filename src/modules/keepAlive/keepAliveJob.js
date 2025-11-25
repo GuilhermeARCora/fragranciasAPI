@@ -6,10 +6,10 @@ const fs = require('fs');
 const path = require('path');
 const express = require('express');
 const mongoose = require('mongoose');
-const supa = require('../../config/supabase');
-const catchAsync = require('../utils/catchAsync');
-const deleteImage = require('../utils/supabaseDelete');
-const AppError = require('../utils/appError');
+const supa = require('../../../config/supabase');
+const catchAsync = require('../../core/utils/catchAsync');
+const deleteImage = require('../../core/utils/supabaseDelete');
+const AppError = require('../../core/utils/appError');
 
 const router = express.Router();
 
