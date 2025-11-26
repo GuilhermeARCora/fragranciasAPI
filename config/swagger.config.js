@@ -26,10 +26,14 @@ const swaggerOptions = {
     components: {
       ...swaggerComponents,
       securitySchemes: {
-        bearerAuth: { type: 'http', scheme: 'bearer', bearerFormat: 'JWT' }
+        cookieAuth: {
+          type: 'apiKey',
+          in: 'cookie',
+          name: 'jwt'
+        }
       }
     },
-    security: [{ bearerAuth: [] }]
+    security: [{ cookieAuth: [] }]
   },
   apis: ['./src/modules/**/*.js']
 };
@@ -43,7 +47,17 @@ const swaggerLimiter = rateLimit({
 });
 
 function setupSwagger(app) {
-  app.use('/api-docs', swaggerLimiter, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+  app.use(
+    '/api-docs',
+    swaggerLimiter,
+    swaggerUi.serve,
+    swaggerUi.setup(swaggerSpec, {
+      explorer: false,
+      swaggerOptions: {
+        withCredentials: true
+      }
+    })
+  );
 
   console.log(
     `📘 Swagger docs running at ${

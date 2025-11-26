@@ -1,6 +1,6 @@
 const ErrorResponses = {
-  ValidationError: {
-    description: 'Erro de validação nos dados enviados.',
+  BadRequest: {
+    description: 'Os dados passados são inválidos.',
     content: {
       'application/json': {
         schema: {
@@ -9,16 +9,15 @@ const ErrorResponses = {
             status: { type: 'string', example: 'fail' },
             message: {
               type: 'string',
-              example: 'Dados inválidos: Email é obrigatório. A senha deve ter pelo menos 8 caracteres.'
-            },
-            errors: { type: 'array', example: [{ field: 'email', message: 'is required' }] }
+              example: 'Os dados passados são inválidos!'
+            }
           }
         }
       }
     }
   },
   DuplicateError: {
-    description: 'Campo duplicado (unique constraint).',
+    description: 'Campo duplicado.',
     content: {
       'application/json': {
         schema: {
@@ -42,7 +41,49 @@ const ErrorResponses = {
           type: 'object',
           properties: {
             status: { type: 'string', example: 'fail' },
-            message: { type: 'string', example: 'Email ou senha incorretos' }
+            message: { type: 'string', example: 'Credenciais inválidas ou token inválido.' }
+          }
+        }
+      }
+    }
+  },
+  InternalServerError: {
+    description: 'Erro interno do servidor.',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'object',
+          properties: {
+            status: { type: 'string', example: 'fail' },
+            message: { type: 'string', example: 'Erro interno do servidor.' }
+          }
+        }
+      }
+    }
+  },
+  NotFoundError: {
+    description: 'Recurso não encontrado.',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'object',
+          properties: {
+            status: { type: 'string', example: 'fail' },
+            message: { type: 'string', example: 'Recurso não encontrado.' }
+          }
+        }
+      }
+    }
+  },
+  ForbiddenError: {
+    description: 'Você não possui autorizacão.',
+    content: {
+      'application/json': {
+        schema: {
+          type: 'object',
+          properties: {
+            status: { type: 'string', example: 'fail' },
+            message: { type: 'string', example: 'Você não possui autorizacão.' }
           }
         }
       }
