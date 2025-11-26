@@ -4,8 +4,9 @@ const filterFields = require('../../core/utils/filterFields');
 const User = require('./user.model');
 
 const signup = async (reqBody) => {
-  // Prevent injecting restricted fields like 'role' by explicitly selecting allowed attributes
   const safeData = filterFields(reqBody, 'name', 'password', 'email', 'confirmPassword', 'confirmEmail');
+
+  if (Object.keys(safeData).length === 0) throw new AppError('Os dados passados são inválidos!', 400);
 
   // full user instance (to trigger virtual validation)
   const user = new User(safeData);
@@ -14,8 +15,6 @@ const signup = async (reqBody) => {
   await user.validate(); // this will throw if confirm fields are wrong
 
   const createdUser = await authDao.signup(user);
-
-  if (!createdUser) throw new AppError('Falha ao criar o usuário. Tente novamente mais tarde.', 500);
 
   createdUser.password = undefined;
 
