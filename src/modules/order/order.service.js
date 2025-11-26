@@ -9,6 +9,8 @@ dayjs.locale('pt-br');
 const create = async (reqBody) => {
   const safeData = filterFields(reqBody, 'items');
 
+  if (Object.keys(safeData).length === 0) throw new AppError('Os dados passados são inválidos!', 500);
+
   const order = await orderDao.create(safeData);
 
   return order;
@@ -39,8 +41,8 @@ const update = async (reqParamsId, reqBody) => {
   }
 
   const order = await orderDao.findOne(id);
-  if (order.status === 'CONCLUIDO') throw new AppError('O pedido já foi concluido!', 404);
-  if (order.status === 'CANCELADO') throw new AppError('O pedido já foi cancelado!', 404);
+  if (order.status === 'CONCLUIDO') throw new AppError('O pedido já foi concluido!', 400);
+  if (order.status === 'CANCELADO') throw new AppError('O pedido já foi cancelado!', 400);
 
   const orderUpdated = await orderDao.update({ id, ...safeData });
 

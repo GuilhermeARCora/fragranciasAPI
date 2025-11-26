@@ -24,6 +24,8 @@ const checkIfDestaqueIsNotFull = async function (id = '') {
 const create = async (reqBody) => {
   const safeData = filterFields(reqBody, 'name', 'fullPrice', 'description', 'image', 'categories', 'active', 'promoPercentage', 'cod');
 
+  if (Object.keys(safeData).length === 0) throw new AppError('Os dados passados são inválidos!', 400);
+
   if (safeData.categories.includes('destaque')) await checkIfDestaqueIsNotFull();
 
   const createdProduct = await productDao.create(safeData);
@@ -78,6 +80,7 @@ const update = async (reqParamsId, reqBody) => {
   }
 
   const safeData = filterFields(reqBody, 'name', 'fullPrice', 'description', 'image', 'categories', 'active', 'promoPercentage', 'cod');
+  if (Object.keys(safeData).length === 0) throw new AppError('Os dados passados são inválidos!', 400);
   safeData.image = reqBody.image || currentProduct.image;
 
   if (safeData.categories.includes('destaque')) await checkIfDestaqueIsNotFull(id);
@@ -93,6 +96,8 @@ const changeStatus = async (reqParamsId, reqBody) => {
   const id = reqParamsId;
 
   const safeData = filterFields(reqBody, 'active');
+
+  if (Object.keys(safeData).length === 0) throw new AppError('Os dados passados são inválidos!', 400);
 
   const product = await productDao.changeStatus({ id, ...safeData });
 

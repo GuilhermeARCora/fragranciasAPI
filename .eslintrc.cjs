@@ -24,6 +24,7 @@ module.exports = {
     ],
     'no-plusplus': 'off',
     'func-names': 'off',
+    'max-len': 'off',
 
     // Node / imports
     'import/no-extraneous-dependencies': ['error', { devDependencies: true }],

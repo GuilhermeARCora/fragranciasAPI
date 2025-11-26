@@ -39,11 +39,11 @@ The project includes both automated and manual testing tools to ensure API relia
 Interactive documentation and testing tools:
 
 - 🧩 **Swagger UI** — available at:  
-👉 <a href="https://api.fragranciasdecor.com.br/api-docs/" target="_blank" rel="noopener noreferrer">/api-docs</a>
+👉 <a href="https://api.fragranciasdecor.com.br/api-docs/" target="_blank" rel="noopener noreferrer">/api-docs</a> 
   *(auto-generated from JSDoc comments)*
 
-- 💼 **Postman Collection** — available at:  
-  🔗 [View on Postman](#)  
+- 💼 **Postman Collection** — available at: 
+🔗 <a href="https://documenter.getpostman.com/view/43222439/2sB3dJzsYk#intro" target="_blank" rel="noopener noreferrer">View on Postman</a>  
   *(A complete collection with all API endpoints.)*
 
 ## 🧹 Code Quality

@@ -36,7 +36,7 @@ const logout = (req, res, next) => {
 const me = (req, res) => {
   const user = req.user.toObject();
 
-  sendResponse(res, 200, 'success', user);
+  sendResponse(res, 200, 'Sucesso ao recuperar o usuário autenticado', user);
 };
 
 module.exports = {
