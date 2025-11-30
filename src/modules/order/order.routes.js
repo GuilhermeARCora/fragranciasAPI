@@ -7,7 +7,7 @@ const restrictRouteMiddleware = require('../../core/middlewares/restrictRoutes.m
 
 /**
  * @swagger
- * /api/v1/orders:
+ * /orders:
  *   post:
  *     summary: Cria um novo pedido
  *     tags: [Orders]
@@ -45,14 +45,12 @@ const restrictRouteMiddleware = require('../../core/middlewares/restrictRoutes.m
  *           application/json:
  *             schema:
  *               $ref: '#/components/responses/BadRequest'
- *       500:
- *         $ref: '#/components/responses/InternalServerError'
  */
 router.route('/').post(orderController.create);
 
 /**
  * @swagger
- * /api/v1/orders/statistics:
+ * /orders/statistics:
  *   get:
  *     summary: Retorna estatísticas gerais dos pedidos
  *     tags: [Orders]
@@ -86,7 +84,7 @@ router.route('/statistics')
 
 /**
  * @swagger
- * /api/v1/orders/ordersEvolution:
+ * /orders/ordersEvolution:
  *   get:
  *     summary: Retorna a evolução mensal dos pedidos
  *     tags: [Orders]
@@ -121,7 +119,7 @@ router.route('/ordersEvolution')
 
 /**
  * @swagger
- * /api/v1/orders/{id}:
+ * /orders/{id}:
  *   get:
  *     summary: Busca um pedido pelo ID
  *     tags: [Orders]
@@ -153,8 +151,6 @@ router.route('/ordersEvolution')
  *           application/json:
  *             schema:
  *               $ref: '#/components/responses/NotFoundError'
- *       500:
- *         $ref: '#/components/responses/InternalServerError'
  */
 router.route('/:id').get(orderController.findOne);
 
@@ -163,7 +159,7 @@ router.use(restrictRouteMiddleware.restrictTo('admin'));
 
 /**
  * @swagger
- * /api/v1/orders:
+ * /orders:
  *   get:
  *     summary: Lista todos os pedidos com filtros
  *     tags: [Orders]
@@ -227,7 +223,7 @@ router.route('/').get(orderController.findAll);
 
 /**
  * @swagger
- * /api/v1/orders/{id}/status:
+ * /orders/{id}/status:
  *   patch:
  *     summary: Atualiza o status de um pedido
  *     tags: [Orders]

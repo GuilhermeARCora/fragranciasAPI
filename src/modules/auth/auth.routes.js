@@ -6,7 +6,7 @@ const protectRoutesMiddleware = require('../../core/middlewares/protectRoutes.mi
 
 /**
  * @swagger
- * /api/v1/auth/signup:
+ * /auth/signup:
  *   post:
  *     summary: Cria um novo usuário
  *     description: Este endpoint está documentado apenas para fins de visualização. Ele não pode ser executado via Swagger.
@@ -87,14 +87,12 @@ const protectRoutesMiddleware = require('../../core/middlewares/protectRoutes.mi
  *         $ref: '#/components/responses/BadRequest'
  *       409:
  *         $ref: '#/components/responses/DuplicateError'
- *       500:
- *         $ref: '#/components/responses/InternalServerError'
  */
 router.post('/signup', authController.signup);
 
 /**
  * @swagger
- * /api/v1/auth/login:
+ * /auth/login:
  *   post:
  *     summary: Faz login do usuário e retorna o token JWT
  *     tags: [Auth]
@@ -140,8 +138,6 @@ router.post('/signup', authController.signup);
  *         $ref: '#/components/responses/UnauthorizedError'
  *       404:
  *         $ref: '#/components/responses/NotFoundError'
- *       500:
- *         $ref: '#/components/responses/InternalServerError'
  */
 router.post('/login', authController.login);
 
@@ -149,7 +145,7 @@ router.use(protectRoutesMiddleware.protect);
 
 /**
  * @swagger
- * /api/v1/auth/me:
+ * /auth/me:
  *   get:
  *     summary: Retorna os dados do usuário autenticado via token JWT armazenado em cookies.
  *     description: Este endpoint retorna as informações do usuário logado.
@@ -174,14 +170,12 @@ router.use(protectRoutesMiddleware.protect);
  *                   $ref: '#/components/schemas/User'
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
- *       500:
- *         $ref: '#/components/responses/InternalServerError'
  */
 router.get('/me', authController.me);
 
 /**
  * @swagger
- * /api/v1/auth/logout:
+ * /auth/logout:
  *   delete:
  *     summary: Desconecta o usuário e sobrescreve o token
  *     description: Limpa o cookie JWT.
@@ -207,8 +201,6 @@ router.get('/me', authController.me);
  *                   example: {}
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
- *       500:
- *         $ref: '#/components/responses/InternalServerError'
  */
 router.delete('/logout', authController.logout);
 

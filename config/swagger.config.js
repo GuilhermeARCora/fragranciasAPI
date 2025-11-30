@@ -19,7 +19,7 @@ const swaggerOptions = {
       {
         url: IS_PROD
           ? 'https://api.fragranciasdecor.com.br/api/v1/'
-          : 'http://localhost:3000',
+          : 'http://localhost:3000/api/v1/',
         description: IS_PROD ? 'Production server' : 'Local development server'
       }
     ],
