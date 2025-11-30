@@ -8,7 +8,7 @@ const imageUpload = require('../../core/middlewares/uploadImage.middleware');
 
 /**
  * @swagger
- * /api/v1/products:
+ * /products:
  *   get:
  *     summary: Lista todos os produtos filtrados
  *     tags: [Products]
@@ -62,7 +62,7 @@ router.route('/').get(productController.findAll);
 
 /**
  * @swagger
- * /api/v1/products/latest:
+ * /products/latest:
  *   get:
  *     summary: Lista os 10 produtos mais recentes
  *     tags: [Products]
@@ -95,7 +95,7 @@ router.route('/latest').get(productController.newProducts);
 
 /**
  * @swagger
- * /api/v1/products/statistics:
+ * /products/statistics:
  *   get:
  *     summary: Retorna estatísticas dos produtos
  *     tags: [Products]
@@ -151,7 +151,7 @@ router.route('/statistics').get(protectRoutesMiddleware.protect, restrictRouteMi
 
 /**
  * @swagger
- * /api/v1/products/category/{category}:
+ * /products/category/{category}:
  *   get:
  *     summary: Lista produtos por categoria
  *     tags: [Products]
@@ -193,7 +193,7 @@ router.route('/category/:category').get(productController.findByCategory);
 
 /**
  * @swagger
- * /api/v1/products/{id}:
+ * /products/{id}:
  *   get:
  *     summary: Retorna um único produto pelo ID
  *     tags: [Products]
@@ -234,7 +234,7 @@ const uploadImage = imageUpload(process.env.PRODUCTS_BUCKET, { folder: 'products
 
 /**
  * @swagger
- * /api/v1/products:
+ * /products:
  *   post:
  *     summary: Cria um novo produto
  *     tags: [Products]
@@ -300,7 +300,7 @@ router.route('/').post(uploadImage, productController.create);
 
 /**
  * @swagger
- * /api/v1/products/{id}/status:
+ * /products/{id}/status:
  *   patch:
  *     summary: Atualiza apenas o campo "active" do produto
  *     tags: [Products]
@@ -348,7 +348,7 @@ router.route('/:id/status').patch(productController.changeStatus);
 
 /**
  * @swagger
- * /api/v1/products/{id}:
+ * /products/{id}:
  *   patch:
  *     summary: Atualiza os dados do produto
  *     tags: [Products]
@@ -411,7 +411,7 @@ router.route('/:id').patch(uploadImage, productController.update);
 
 /**
  * @swagger
- * /api/v1/products/{id}:
+ * /products/{id}:
  *   delete:
  *     summary: Remove um produto pelo ID
  *     tags: [Products]
