@@ -54,11 +54,11 @@ const update = async (reqParamsId, reqBody) => {
 const findStatistics = async () => {
   const items = await orderDao.findItemsInOrders();
   const [{
-    amountStatusPendente,
-    amountStatusConcluido,
-    amountStatusCancelado,
-    amountInTheLastTwoDays
-  }] = await orderDao.findStatusStatistics();
+    amountStatusPendente = 0,
+    amountStatusConcluido = 0,
+    amountStatusCancelado = 0,
+    amountInTheLastTwoDays = 0
+  } = {}] = await orderDao.findStatusStatistics();
 
   const statistics = {
     amountStatusPendente,
