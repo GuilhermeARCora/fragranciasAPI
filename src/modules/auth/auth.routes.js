@@ -6,7 +6,7 @@ const protectRoutesMiddleware = require('../../core/middlewares/protectRoutes.mi
 
 /**
  * @swagger
- * /api/v1/auth/signup:
+ * /auth/signup:
  *   post:
  *     summary: Cria um novo usuário
  *     description: Este endpoint está documentado apenas para fins de visualização. Ele não pode ser executado via Swagger.
@@ -94,7 +94,7 @@ router.post('/signup', authController.signup);
 
 /**
  * @swagger
- * /api/v1/auth/login:
+ * /auth/login:
  *   post:
  *     summary: Faz login do usuário e retorna o token JWT
  *     tags: [Auth]
@@ -149,7 +149,7 @@ router.use(protectRoutesMiddleware.protect);
 
 /**
  * @swagger
- * /api/v1/auth/me:
+ * /auth/me:
  *   get:
  *     summary: Retorna os dados do usuário autenticado via token JWT armazenado em cookies.
  *     description: Este endpoint retorna as informações do usuário logado.
@@ -181,7 +181,7 @@ router.get('/me', authController.me);
 
 /**
  * @swagger
- * /api/v1/auth/logout:
+ * /auth/logout:
  *   delete:
  *     summary: Desconecta o usuário e sobrescreve o token
  *     description: Limpa o cookie JWT.
