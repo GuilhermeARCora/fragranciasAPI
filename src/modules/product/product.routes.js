@@ -57,8 +57,6 @@ const imageUpload = require('../../core/middlewares/uploadImage.middleware');
  *                     amount:
  *                       type: number
  *                       example: 12
- *       500:
- *         $ref: '#/components/responses/InternalServerError'
  */
 router.route('/').get(productController.findAll);
 
@@ -92,8 +90,6 @@ router.route('/').get(productController.findAll);
  *                     amount:
  *                       type: number
  *                       example: 10
- *       500:
- *         $ref: '#/components/responses/InternalServerError'
  */
 router.route('/latest').get(productController.newProducts);
 
@@ -150,8 +146,6 @@ router.route('/latest').get(productController.newProducts);
  *         $ref: '#/components/responses/UnauthorizedError'
  *       403:
  *         $ref: '#/components/responses/ForbiddenError'
- *       500:
- *         $ref: '#/components/responses/InternalServerError'
  */
 router.route('/statistics').get(protectRoutesMiddleware.protect, restrictRouteMiddleware.restrictTo('admin'), productController.findStatistics);
 
@@ -194,8 +188,6 @@ router.route('/statistics').get(protectRoutesMiddleware.protect, restrictRouteMi
  *                       example: 1
  *       400:
  *         $ref: '#/components/responses/BadRequest'
- *       500:
- *         $ref: '#/components/responses/InternalServerError'
  */
 router.route('/category/:category').get(productController.findByCategory);
 
@@ -227,10 +219,10 @@ router.route('/category/:category').get(productController.findByCategory);
  *                   example: "success"
  *                 data:
  *                   $ref: '#/components/schemas/Product'
+ *       400:
+ *         $ref: '#/components/responses/BadRequest'
  *       404:
  *         $ref: '#/components/responses/NotFoundError'
- *       500:
- *         $ref: '#/components/responses/InternalServerError'
  */
 router.route('/:id').get(productController.findOne);
 
@@ -301,8 +293,8 @@ const uploadImage = imageUpload(process.env.PRODUCTS_BUCKET, { folder: 'products
  *         $ref: '#/components/responses/UnauthorizedError'
  *       403:
  *         $ref: '#/components/responses/ForbiddenError'
- *       500:
- *         $ref: '#/components/responses/InternalServerError'
+ *       409:
+ *         $ref: '#/components/responses/DuplicateError'
  */
 router.route('/').post(uploadImage, productController.create);
 
@@ -412,6 +404,8 @@ router.route('/:id/status').patch(productController.changeStatus);
  *         $ref: '#/components/responses/BadRequest'
  *       404:
  *         $ref: '#/components/responses/NotFoundError'
+ *       409:
+ *         $ref: '#/components/responses/DuplicateError'
  */
 router.route('/:id').patch(uploadImage, productController.update);
 
@@ -438,8 +432,6 @@ router.route('/:id').patch(uploadImage, productController.update);
  *         $ref: '#/components/responses/UnauthorizedError'
  *       403:
  *         $ref: '#/components/responses/ForbiddenError'
- *       500:
- *         $ref: '#/components/responses/InternalServerError'
  */
 router.route('/:id').delete(productController.remove);
 

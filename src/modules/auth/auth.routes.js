@@ -87,8 +87,6 @@ const protectRoutesMiddleware = require('../../core/middlewares/protectRoutes.mi
  *         $ref: '#/components/responses/BadRequest'
  *       409:
  *         $ref: '#/components/responses/DuplicateError'
- *       500:
- *         $ref: '#/components/responses/InternalServerError'
  */
 router.post('/signup', authController.signup);
 
@@ -140,8 +138,6 @@ router.post('/signup', authController.signup);
  *         $ref: '#/components/responses/UnauthorizedError'
  *       404:
  *         $ref: '#/components/responses/NotFoundError'
- *       500:
- *         $ref: '#/components/responses/InternalServerError'
  */
 router.post('/login', authController.login);
 
@@ -174,8 +170,6 @@ router.use(protectRoutesMiddleware.protect);
  *                   $ref: '#/components/schemas/User'
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
- *       500:
- *         $ref: '#/components/responses/InternalServerError'
  */
 router.get('/me', authController.me);
 
@@ -207,8 +201,6 @@ router.get('/me', authController.me);
  *                   example: {}
  *       401:
  *         $ref: '#/components/responses/UnauthorizedError'
- *       500:
- *         $ref: '#/components/responses/InternalServerError'
  */
 router.delete('/logout', authController.logout);
 
