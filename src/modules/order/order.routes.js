@@ -45,8 +45,6 @@ const restrictRouteMiddleware = require('../../core/middlewares/restrictRoutes.m
  *           application/json:
  *             schema:
  *               $ref: '#/components/responses/BadRequest'
- *       500:
- *         $ref: '#/components/responses/InternalServerError'
  */
 router.route('/').post(orderController.create);
 
@@ -153,8 +151,6 @@ router.route('/ordersEvolution')
  *           application/json:
  *             schema:
  *               $ref: '#/components/responses/NotFoundError'
- *       500:
- *         $ref: '#/components/responses/InternalServerError'
  */
 router.route('/:id').get(orderController.findOne);
 

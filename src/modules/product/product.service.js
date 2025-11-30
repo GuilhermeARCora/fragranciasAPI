@@ -26,7 +26,7 @@ const create = async (reqBody) => {
 
   if (Object.keys(safeData).length === 0) throw new AppError('Os dados passados são inválidos!', 400);
 
-  if (safeData.categories.includes('destaque')) await checkIfDestaqueIsNotFull();
+  if (safeData.categories && safeData.categories.includes('destaque')) await checkIfDestaqueIsNotFull();
 
   const createdProduct = await productDao.create(safeData);
 
@@ -83,7 +83,7 @@ const update = async (reqParamsId, reqBody) => {
   if (Object.keys(safeData).length === 0) throw new AppError('Os dados passados são inválidos!', 400);
   safeData.image = reqBody.image || currentProduct.image;
 
-  if (safeData.categories.includes('destaque')) await checkIfDestaqueIsNotFull(id);
+  if (safeData.categories && safeData.categories.includes('destaque')) await checkIfDestaqueIsNotFull(id);
 
   const updatedProduct = await productDao.update({ id, ...safeData });
 
