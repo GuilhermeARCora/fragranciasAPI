@@ -22,11 +22,13 @@ app.use(helmet());
 
 const allowedOrigin = process.env.NODE_ENV === 'production' ? process.env.FRONTEND_URL : process.env.FRONTEND_DEV_URL;
 
-// Enable CORS with credentials support (for cross-origin cookies)
-app.use(cors({
-  origin: allowedOrigin,
-  credentials: true
-}));
+if (process.env.NODE_ENV !== 'test') {
+  // Enable CORS with credentials support (for cross-origin cookies)
+  app.use(cors({
+    origin: allowedOrigin,
+    credentials: true
+  }));
+}
 
 // Enable detailed request logging in development
 if (process.env.NODE_ENV === 'development') {
